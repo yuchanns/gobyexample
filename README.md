@@ -16,7 +16,7 @@ CREATE TABLE `order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_no` (`order_no`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='Main order';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Main order';
 
 CREATE TABLE `order_item` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -37,6 +37,6 @@ CREATE TABLE `order_item` (
   KEY `g_id` (`g_id`),
   KEY `s_id` (`s_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='Order items';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Order items';
 
 ```

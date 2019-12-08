@@ -20,8 +20,8 @@ func main() {
 	defer DB.Close()
 	DB.LogMode(true)
 	// insert
-	//id := service.InsertGoods(DB)
-	//fmt.Println("primary key is ", id)
+	id := service.InsertGoods(DB)
+	fmt.Println("order primary key is ", id)
 	// query
 	order := service.QueryPreload(DB)
 	fmt.Printf("query result is %+v\n", order)
