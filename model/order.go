@@ -69,7 +69,7 @@ func (o *Order) BeforeCreate(scope *gorm.Scope) (err error) {
 }
 
 func (o *Order) BeforeUpdate(scope gorm.Scope) (err error) {
-	scope.Set("UpdatedAt", time.Now().Unix())
+	scope.SetColumn("UpdatedAt", time.Now().Unix())
 	if _, ok := scope.FieldByName("Status"); ok {
 		for _, status := range statusScope {
 			if status == o.Status {

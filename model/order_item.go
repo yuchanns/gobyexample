@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -48,13 +49,14 @@ func (oi *OrderItem) BeforeCreate(scope *gorm.Scope) (err error) {
 }
 
 func (oi *OrderItem) BeforeUpdate(scope gorm.Scope) (err error) {
-	scope.Set("UpdatedAt", time.Now().Unix())
+	scope.SetColumn("UpdatedAt", time.Now().Unix())
 	if _, ok := scope.FieldByName("Status"); ok {
 		for _, status := range statusScope {
 			if status == oi.Status {
 				return
 			}
 		}
+		return errors.New("status out of scope")
 	}
 	return
 }
