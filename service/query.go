@@ -10,5 +10,8 @@ func QueryPreload(DB *gorm.DB) *model.Order {
 	DB.Where("id = ?", 1).Preload("OrderItems", func(db *gorm.DB) *gorm.DB {
 		return db.Unscoped()
 	}).Unscoped().Find(&order)
+	for _, orderItem := range order.OrderItems {
+		orderItem.Order = &order
+	}
 	return &order
 }

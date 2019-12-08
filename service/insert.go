@@ -21,18 +21,18 @@ func InsertGoods(DB *gorm.DB) uint {
 	var userId, sId uint = 1088, 2
 	orderItems := []*model.OrderItem{
 		{
-			SId:    sId,
+			SID:    sId,
 			UserId: userId,
-			GId:    20,
+			GID:    20,
 			Name:   "FoodA",
 			Num:    2,
 			Price:  2000,
 			Status: model.OrderPending,
 		},
 		{
-			SId:    sId,
+			SID:    sId,
 			UserId: userId,
-			GId:    21,
+			GID:    21,
 			Name:   "FoodB",
 			Num:    1,
 			Price:  5000,
@@ -47,7 +47,6 @@ func InsertGoods(DB *gorm.DB) uint {
 
 	order := model.Order{
 		OrderNo:    Node.Generate().String(),
-		SId:        2,
 		UserId:     1088,
 		TotalPrice: totalPrice,
 		Postage:    1000,
@@ -57,6 +56,6 @@ func InsertGoods(DB *gorm.DB) uint {
 
 	DB.Create(&order)
 
-	fmt.Println("order items primary key is ", orderItems[0].Id, " and ", orderItems[1].Id)
-	return order.Id
+	fmt.Println("order items primary key is ", orderItems[0].ID, " and ", orderItems[1].ID)
+	return order.ID
 }
