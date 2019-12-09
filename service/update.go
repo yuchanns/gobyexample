@@ -11,6 +11,6 @@ func UpdateAutoComplete(order *model.Order, DB *gorm.DB) (err error) {
 	//DB.Model(&order).Unscoped().UpdateColumns(model.Order{Status: model.OrderTransporting, IsDeleted: 0})
 	// 推荐写法：支持字段为int类型的UpdatedAt自动更新
 	order.Status = model.OrderPayed
-	err = DB.Unscoped().Select("Status").Save(&order).Error
+	err = DB.Unscoped().Select("Status", "UpdatedAt").Save(&order).Error
 	return
 }
