@@ -68,8 +68,9 @@ func (o *Order) BeforeCreate(scope *gorm.Scope) (err error) {
 	return
 }
 
-func (o *Order) BeforeUpdate(scope gorm.Scope) (err error) {
+func (o *Order) BeforeUpdate(scope *gorm.Scope) (err error) {
 	scope.SetColumn("UpdatedAt", time.Now().Unix())
+	scope.Set("gorm:save_associations", false) // 更新的时候不进行关联更新
 	if _, ok := scope.FieldByName("Status"); ok {
 		for _, status := range statusScope {
 			if status == o.Status {

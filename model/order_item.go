@@ -48,7 +48,7 @@ func (oi *OrderItem) BeforeCreate(scope *gorm.Scope) (err error) {
 	return
 }
 
-func (oi *OrderItem) BeforeUpdate(scope gorm.Scope) (err error) {
+func (oi *OrderItem) BeforeUpdate(scope *gorm.Scope) (err error) {
 	scope.SetColumn("UpdatedAt", time.Now().Unix())
 	if _, ok := scope.FieldByName("Status"); ok {
 		for _, status := range statusScope {

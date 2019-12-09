@@ -27,4 +27,8 @@ func main() {
 	fmt.Printf("query result is %+v\n", order)
 	fmt.Printf("the order items are %+v and %+v\n", order.OrderItems[0], order.OrderItems[1])
 	// update
+	err = service.UpdateAutoComplete(order, DB)
+	if err != nil {
+		fmt.Println("updated failed")
+	}
 }
