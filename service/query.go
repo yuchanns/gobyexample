@@ -9,7 +9,7 @@ func QueryPreload(DB *gorm.DB) *model.Order {
 	var order model.Order
 	DB.Where("id = ?", 1).Preload("OrderItems", func(db *gorm.DB) *gorm.DB {
 		return db.Unscoped()
-	}).Unscoped().Find(&order)
+	}).Unscoped().First(&order) // Find() is ok
 	for _, orderItem := range order.OrderItems {
 		orderItem.Order = &order
 	}

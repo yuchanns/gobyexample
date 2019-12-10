@@ -29,6 +29,21 @@ func main() {
 	// update
 	err = service.UpdateAutoComplete(order, DB)
 	if err != nil {
-		fmt.Println("updated failed")
+		fmt.Println("update failed")
 	}
+	// transaction
+	service.Transaction(order, DB)
+	// advanced operation
+	//// join
+	orderJoins := service.Join(DB)
+	fmt.Printf("join result is %+v\n", orderJoins[0])
+	//// group
+	list := service.Group(DB)
+	fmt.Printf("result is %+v\n", list)
+	//// count
+	count := service.Count(DB)
+	fmt.Println("count is", count)
+	//// subquery
+	orderItemSub := service.SubQuery(DB)
+	fmt.Printf("subquery result is %+v\n", orderItemSub)
 }
