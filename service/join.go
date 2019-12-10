@@ -10,6 +10,7 @@ type OrderJoin struct {
 
 func Join(DB *gorm.DB) []*OrderJoin {
 	var orderJoins []*OrderJoin
-	DB.Table("order_item").Joins("left join `order` on order.id = order_item.order_id").Select("order_item.id, name, order_no").Find(&orderJoins)
+	DB.Table("order_item").Joins("left join `order` on order.id = order_item.order_id").
+		Select("order_item.id, name, order_no").Find(&orderJoins)
 	return orderJoins
 }
