@@ -52,6 +52,9 @@ func (o *Order) TableName() string {
 func (o *Order) AfterFind() {
 	o.CreatedTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
 	o.UpdatedTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+	for _, orderItem := range o.OrderItems {
+		orderItem.Order = o
+	}
 }
 
 func (o *Order) BeforeCreate(scope *gorm.Scope) (err error) {
