@@ -1,10 +1,10 @@
-package service
+package gorm
 
 import (
 	"fmt"
 	"github.com/bwmarrin/snowflake"
 	"github.com/jinzhu/gorm"
-	"github.com/yuchanns/gobyexample/model"
+	"github.com/yuchanns/gobyexample/gorm/model"
 )
 
 var Node *snowflake.Node

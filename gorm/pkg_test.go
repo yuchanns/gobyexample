@@ -1,10 +1,10 @@
-package main
+package gorm
 
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/yuchanns/gobyexample/service"
+	"testing"
 )
 
 var (
@@ -12,38 +12,54 @@ var (
 	err error
 )
 
-func main() {
+func init() {
 	DB, err = gorm.Open("mysql", "root:@/gobyexample?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err.Error())
 	}
-	defer DB.Close()
 	DB.LogMode(true)
-	// insert
-	id := service.InsertGoods(DB)
+}
+
+func TestInsertGoods(t *testing.T) {
+	id := InsertGoods(DB)
 	fmt.Println("order primary key is ", id)
-	// query
-	order := service.QueryPreload(DB)
+}
+
+func TestQueryPreload(t *testing.T) {
+	order := QueryPreload(DB)
 	fmt.Printf("query result is %+v\n", order)
 	fmt.Printf("the order items are %+v and %+v\n", order.OrderItems[0], order.OrderItems[1])
-	// update
-	err = service.UpdateAutoComplete(order, DB)
+}
+
+func TestUpdateAutoComplete(t *testing.T) {
+	order := QueryPreload(DB)
+	err = UpdateAutoComplete(order, DB)
 	if err != nil {
 		fmt.Println("update failed")
 	}
-	// transaction
-	service.Transaction(order, DB)
-	// advanced operation
-	//// join
-	orderJoins := service.Join(DB)
+}
+
+func TestTransaction(t *testing.T) {
+	order := QueryPreload(DB)
+	Transaction(order, DB)
+}
+
+func TestJoin(t *testing.T) {
+	orderJoins := Join(DB)
 	fmt.Printf("join result is %+v\n", orderJoins[0])
-	//// group
-	list := service.Group(DB)
+}
+
+func TestGroup(t *testing.T) {
+	list := Group(DB)
 	fmt.Printf("result is %+v\n", list)
-	//// count
-	count := service.Count(DB)
+}
+
+func TestCount(t *testing.T) {
+	count := Count(DB)
 	fmt.Println("count is", count)
-	//// subquery
-	orderItemSub := service.SubQuery(DB)
+}
+
+func TestSubQuery(t *testing.T) {
+	orderItemSub := SubQuery(DB)
 	fmt.Printf("subquery result is %+v\n", orderItemSub)
 }

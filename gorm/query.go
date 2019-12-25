@@ -1,8 +1,8 @@
-package service
+package gorm
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/yuchanns/gobyexample/model"
+	"github.com/yuchanns/gobyexample/gorm/model"
 )
 
 func QueryPreload(DB *gorm.DB) *model.Order {

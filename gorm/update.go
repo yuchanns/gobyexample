@@ -1,8 +1,8 @@
-package service
+package gorm
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/yuchanns/gobyexample/model"
+	"github.com/yuchanns/gobyexample/gorm/model"
 )
 
 func UpdateAutoComplete(order *model.Order, DB *gorm.DB) (err error) {

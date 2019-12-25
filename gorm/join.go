@@ -1,4 +1,4 @@
-package service
+package gorm
 
 import "github.com/jinzhu/gorm"
 
