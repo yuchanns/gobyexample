@@ -17,6 +17,7 @@ type httpConfig struct {
 	Addr         string
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+	Mode         string
 }
 
 func New(service *service.Service) (closeFunc func(), err error) {
@@ -28,6 +29,14 @@ func New(service *service.Service) (closeFunc func(), err error) {
 
 	if err = uviper.Get("http").Unmarshal(&config); err != nil {
 		return
+	}
+
+	if config.Mode == "debug" {
+		gin.SetMode(gin.DebugMode)
+	} else if config.Mode == "test" {
+		gin.SetMode(gin.TestMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
 	engine := gin.Default()
