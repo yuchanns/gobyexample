@@ -1,0 +1,4 @@
+[db]
+    dsn = "root:@(127.0.0.1:3306)/atelier?charset=utf8&parseTime=True&loc=Local"
+    active = 10
+    idle = 10
