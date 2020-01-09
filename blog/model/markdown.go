@@ -26,7 +26,7 @@ func (m *Markdown) BeforeCreate(scope *gorm.Scope) {
 }
 
 func (m *Markdown) AfterCreate() {
-	m.CreatedAtTime = time.Unix(m.CreatedAt, 0).Format("2006-01-02 15:04:05")
+	m.CreatedAtTime = time.Unix(m.CreatedAt, 0).Format(FORMAT_ISO8601)
 }
 
 func (m *Markdown) BeforeSave(scope *gorm.Scope) {
@@ -35,12 +35,12 @@ func (m *Markdown) BeforeSave(scope *gorm.Scope) {
 }
 
 func (m *Markdown) AfterSave() {
-	m.UpdatedAtTime = time.Unix(m.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+	m.UpdatedAtTime = time.Unix(m.UpdatedAt, 0).Format(FORMAT_ISO8601)
 	m.Content = html.UnescapeString(m.Content)
 }
 
 func (m *Markdown) AfterFind() {
 	m.Content = html.UnescapeString(m.Content)
-	m.CreatedAtTime = time.Unix(m.CreatedAt, 0).Format("2006-01-02 15:04:05")
-	m.UpdatedAtTime = time.Unix(m.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+	m.CreatedAtTime = time.Unix(m.CreatedAt, 0).Format(FORMAT_ISO8601)
+	m.UpdatedAtTime = time.Unix(m.UpdatedAt, 0).Format(FORMAT_ISO8601)
 }
