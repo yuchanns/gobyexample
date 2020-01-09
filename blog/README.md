@@ -18,16 +18,16 @@ CREATE TABLE `articles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='articles';
 ```
 
-```sq
+```sql
 CREATE TABLE `categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(10) NOT NULL DEFAULT '',
   `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='categories';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='categories';
 ```
 
-```sq
+```sql
 CREATE TABLE `markdown` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` mediumtext,
