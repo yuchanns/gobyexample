@@ -10,31 +10,28 @@ import (
 
 type Service struct {
 	DB *gorm.DB
-	c  *gin.Context
 }
 
-func (s *Service) SetContext(c *gin.Context) {
-	s.c = c
-}
-
-func (s *Service) Json(resp *stdresp.DefaultResp) {
-	s.c.JSON(http.StatusOK, gin.H{
+func (s *Service) Json(c *gin.Context, resp *stdresp.DefaultResp) {
+	c.JSON(http.StatusOK, gin.H{
 		"code":    resp.Code,
 		"message": resp.Msg,
 		"data":    resp.Data,
 	})
-
-	s.c.Abort()
 }
 
-func (s *Service) Ping() {
-	name := s.c.DefaultQuery("name", "Stranger")
+func (s *Service) Ping(c *gin.Context) {
+	name := c.DefaultQuery("name", "Stranger")
 	resp := s.NewResp("pong", s.WithCode(200), s.WithMsg(strings.Join([]string{"hello", name}, " ")))
-	s.Json(resp)
+	s.Json(c, resp)
 }
 
 func (Service) NewResp(data interface{}, opts ...stdresp.IOption) *stdresp.DefaultResp {
 	return stdresp.NewStdResp(data, opts...)
+}
+
+func (Service) NewRespErr(opts ...stdresp.IOption) *stdresp.DefaultResp {
+	return stdresp.NewStdRespErr(opts...)
 }
 
 func (Service) WithCode(c int) stdresp.IOption {

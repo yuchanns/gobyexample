@@ -6,7 +6,6 @@ import (
 )
 
 type IService interface {
-	SetContext(*gin.Context)
-	Json(*stdresp.DefaultResp)
-	Ping()
+	Json(*gin.Context, *stdresp.DefaultResp)
+	Ping(*gin.Context)
 }
