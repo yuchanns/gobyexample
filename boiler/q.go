@@ -16,6 +16,8 @@ var (
 	Ctx  context.Context
 )
 
+const FormatIso8601 = "2006-01-02 15:04:05"
+
 func init() {
 	var err error
 	Node, err = snowflake.NewNode(1)
@@ -44,8 +46,8 @@ func AddHookBeforeInsert() {
 
 func AddHookAfterInsert() {
 	models.AddOrderHook(boil.AfterInsertHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
-		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
-		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format(FormatIso8601)
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format(FormatIso8601)
 
 		return nil
 	})
@@ -53,8 +55,8 @@ func AddHookAfterInsert() {
 
 func AddHookAfterQuery() {
 	models.AddOrderHook(boil.AfterSelectHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
-		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
-		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format(FormatIso8601)
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format(FormatIso8601)
 
 		return nil
 	})
@@ -72,8 +74,8 @@ func AddHookBeforeUpdate() {
 
 func AddHookAfterUpdate() {
 	models.AddOrderHook(boil.AfterUpdateHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
-		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
-		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format(FormatIso8601)
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format(FormatIso8601)
 
 		return nil
 	})
