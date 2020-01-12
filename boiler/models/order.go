@@ -23,19 +23,22 @@ import (
 
 // Order is an object representing the database table.
 type Order struct {
-	ID         uint   `boil:"id" json:"id" toml:"id" yaml:"id"`
-	OrderNo    string `boil:"order_no" json:"order_no" toml:"order_no" yaml:"order_no"`
-	UserID     uint   `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
-	TotalPrice uint   `boil:"total_price" json:"total_price" toml:"total_price" yaml:"total_price"`
-	Postage    uint   `boil:"postage" json:"postage" toml:"postage" yaml:"postage"`
-	Status     uint8  `boil:"status" json:"status" toml:"status" yaml:"status"`
-	IsDeleted  uint8  `boil:"is_deleted" json:"is_deleted" toml:"is_deleted" yaml:"is_deleted"`
-	CreatedAt  int64  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt  int64  `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
-	DeletedAt  int64  `boil:"deleted_at" json:"deleted_at" toml:"deleted_at" yaml:"deleted_at"`
+	ID            uint   `boil:"id" json:"id"`
+	OrderNo       string `boil:"order_no" json:"order_no"`
+	UserID        uint   `boil:"user_id" json:"user_id"`
+	TotalPrice    uint   `boil:"total_price" json:"total_price"`
+	Postage       uint   `boil:"postage" json:"postage"`
+	Status        uint8  `boil:"status" json:"status"`
+	IsDeleted     uint8  `boil:"is_deleted" json:"is_deleted"`
+	CreatedAt     int64  `boil:"created_at" json:"-"`
+	UpdatedAt     int64  `boil:"updated_at" json:"-"`
+	DeletedAt     int64  `boil:"deleted_at" json:"-"`
+	CreatedAtTime string `boil:"-" json:"created_at"`
+	UpdatedAtTime string `boil:"-" json:"updated_at"`
+	DeletedAtTime string `boil:"-" json:"deleted_at"`
 
-	R *orderR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L orderL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *orderR `boil:"-" json:"-"`
+	L orderL  `boil:"-" json:"-"`
 }
 
 var OrderColumns = struct {

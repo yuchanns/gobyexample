@@ -23,13 +23,39 @@ func init() {
 		panic(err.Error())
 	}
 	Ctx = context.Background()
+
+	AddHookBeforeInsert()
+	AddHookAfterInsert()
+	AddHookAfterQuery()
+	AddHookBeforeUpdate()
+	AddHookAfterUpdate()
 }
 
 func AddHookBeforeInsert() {
 	models.AddOrderHook(boil.BeforeInsertHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
 		t := time.Now().Unix()
+
 		o.CreatedAt = t
 		o.UpdatedAt = t
+
+		return nil
+	})
+}
+
+func AddHookAfterInsert() {
+	models.AddOrderHook(boil.AfterInsertHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+
+		return nil
+	})
+}
+
+func AddHookAfterQuery() {
+	models.AddOrderHook(boil.AfterSelectHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+
 		return nil
 	})
 }
@@ -37,7 +63,18 @@ func AddHookBeforeInsert() {
 func AddHookBeforeUpdate() {
 	models.AddOrderHook(boil.BeforeUpdateHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
 		t := time.Now().Unix()
+
 		o.UpdatedAt = t
+
+		return nil
+	})
+}
+
+func AddHookAfterUpdate() {
+	models.AddOrderHook(boil.AfterUpdateHook, func(ctx context.Context, exec boil.ContextExecutor, o *models.Order) error {
+		o.CreatedAtTime = time.Unix(o.CreatedAt, 0).Format("2006-01-02 15:04:05")
+		o.UpdatedAtTime = time.Unix(o.UpdatedAt, 0).Format("2006-01-02 15:04:05")
+
 		return nil
 	})
 }
@@ -60,8 +97,6 @@ func CreateOne(db *sql.DB) (*models.Order, error) {
 		IsDeleted:  0,
 	}
 
-	AddHookBeforeInsert()
-
 	err := order.Insert(ctx, db, boil.Infer())
 
 	return &order, err
@@ -73,8 +108,6 @@ func UpdateOne(db *sql.DB) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-
-	AddHookBeforeUpdate()
 
 	rowsAff, err := order.Update(Ctx, db, boil.Infer())
 
