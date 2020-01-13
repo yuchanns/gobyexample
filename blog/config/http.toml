@@ -1,5 +1,0 @@
-[http]
-    addr = ":9501"
-    read_timeout = 10
-    write_timeout = 10
-    mode = "debug"
