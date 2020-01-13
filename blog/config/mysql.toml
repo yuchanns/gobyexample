@@ -1,0 +1,4 @@
+[mysql]
+    dsn = "root:@/atelier?parseTime=true"
+    active = 10
+    idle = 10
