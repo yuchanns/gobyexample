@@ -10,6 +10,12 @@ func InitRouter(engine *gin.Engine) {
 	{
 		test.GET("/ping", Ping)
 	}
+
+	markdown := engine.Group("/markdown")
+	{
+		markdown.POST("/add", srv.Add)
+		markdown.GET("/get", srv.Get)
+	}
 }
 
 func Ping(ctx *gin.Context) {

@@ -2,7 +2,7 @@ package dao
 
 import (
 	"database/sql"
-	"github.com/yuchanns/gobyexample/utils/uviper"
+	"github.com/yuchanns/gobyexample/blog/server/uviper"
 )
 
 type dbConfig struct {

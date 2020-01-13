@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.4.0 // indirect
+	github.com/Masterminds/squirrel v1.1.0
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-gonic/gin v1.5.0
@@ -11,6 +12,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/jinzhu/gorm v1.9.11
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/leodido/go-urn v1.2.0 // indirect

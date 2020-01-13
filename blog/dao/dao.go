@@ -1,17 +1,17 @@
 package dao
 
 import (
-	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 type Dao struct {
-	db *sql.DB
+	sqlxdb *sqlx.DB
 }
 
 // get private db
-func (d *Dao) DB() *sql.DB {
-	return d.db
+func (d *Dao) SqlxDB() *sqlx.DB {
+	return d.sqlxdb
 }
 
 // get a new Dao obj
@@ -22,5 +22,5 @@ func New() *Dao {
 		panic(err.Error())
 	}
 
-	return &Dao{db: db}
+	return &Dao{sqlxdb: sqlx.NewDb(db, "mysql")}
 }
