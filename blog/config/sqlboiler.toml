@@ -1,0 +1,11 @@
+output = "boiler"
+pkgname = "boiler"
+no-tests = "true"
+no-auto-timestamps = "true"
+[mysql]
+dbname = "atelier"
+host = "127.0.0.1"
+port = 3306
+user = "root"
+pass = ""
+sslmode = "false"
