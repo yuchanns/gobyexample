@@ -24,3 +24,16 @@ func TestInitStrings(t *testing.T) {
 func TestRangeSlices(t *testing.T) {
 	RangeSlices()
 }
+
+func TestMultiDimension(t *testing.T) {
+	table := MultiDimension()
+	assert.Equal(t, [][]int{
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}, table)
+}
+
+func TestImmutableStrings(t *testing.T) {
+	x := ImmutableStrings()
+	assert.Equal(t, "Test", x)
+}

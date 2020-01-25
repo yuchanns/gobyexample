@@ -34,3 +34,25 @@ func RangeSlices() {
 		fmt.Println(v)
 	}
 }
+
+func MultiDimension() [][]int {
+	x := 2
+	y := 4
+
+	table := make([][]int, x)
+	for i := range table {
+		table[i] = make([]int, y)
+	}
+
+	fmt.Println(table)
+
+	return table
+}
+
+func ImmutableStrings() string {
+	x := "test"
+	xbytes := []byte(x)
+	xbytes[0] = 'T'
+
+	return string(xbytes)
+}
