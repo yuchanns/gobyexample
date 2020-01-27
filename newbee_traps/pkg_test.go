@@ -50,6 +50,18 @@ func TestNilChannel(t *testing.T) {
 	NilChannel()
 }
 
+func TestJsonEncoderAddNewline(t *testing.T) {
+	byteString, rawString := JsonEncoderAddNewline()
+	assert.NotEqual(t, byteString, rawString)
+}
+
+func TestJsonEscapeHTML(t *testing.T) {
+	rawString, b1String, b2String := JsonEscapeHTML()
+	assert.Equal(t, "\"x \\u003c y\"", rawString)
+	assert.Equal(t, "\"x \\u003c y\"\n", b1String)
+	assert.Equal(t, "\"x < y\"\n", b2String)
+}
+
 func TestJsonUnmarshalNumberic(t *testing.T) {
 	var data = []byte(`{"status": 200}`)
 	status1, status2, status3 := JsonUnmarshalNumberic(data)
@@ -64,4 +76,22 @@ func TestJsonUnmarshalUncertainType(t *testing.T) {
 		[]byte(`{"status": "ok", "tag": "two"}`),
 	}
 	JsonUnmarshalUncertainType(records)
+}
+
+func TestHiddenDataInSlice(t *testing.T) {
+	raw, rawNew, rawCopy, rawFull := HiddenCapacityInSlice()
+	assert.Equal(t, cap(raw), cap(rawNew))
+	assert.Equal(t, 3, cap(rawCopy))
+	assert.Equal(t, 3, cap(rawFull))
+}
+
+func TestDeferredExcutionTime(t *testing.T) {
+	DeferredExcutionTime()
+}
+
+func TestNilInterface(t *testing.T) {
+	data, in, in2 := NilInterface()
+	assert.True(t, data == nil)
+	assert.True(t, in == nil)
+	assert.False(t, in2 == nil)
 }
