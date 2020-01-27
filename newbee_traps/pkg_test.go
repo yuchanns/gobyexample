@@ -51,8 +51,9 @@ func TestNilChannel(t *testing.T) {
 }
 
 func TestJsonUnmarshalNumberic(t *testing.T) {
-	status1, status2, status3 := JsonUnmarshalNumberic()
-	assert.IsType(t, uint64(1), status1)
-	assert.IsType(t, int64(1), status2)
-	assert.IsType(t, uint64(1), status3)
+	var data = []byte(`{"status": 200}`)
+	status1, status2, status3 := JsonUnmarshalNumberic(data)
+	assert.Equal(t, uint64(200), status1)
+	assert.Equal(t, int64(200), status2)
+	assert.Equal(t, uint64(200), status3)
 }

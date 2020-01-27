@@ -117,8 +117,7 @@ func NilChannel() {
 	time.Sleep(3 * time.Second)
 }
 
-func JsonUnmarshalNumberic() (uint64, int64, uint64) {
-	var data = []byte(`{"status": 200}`)
+func JsonUnmarshalNumberic(data []byte) (uint64, int64, uint64) {
 	var result map[string]interface{}
 
 	if err := json.Unmarshal(data, &result); err != nil {
@@ -140,7 +139,7 @@ func JsonUnmarshalNumberic() (uint64, int64, uint64) {
 		Status uint64 `json:"status"`
 	}
 
-	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&result); err != nil {
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&resultS); err != nil {
 		log.Fatalln(err)
 	}
 
