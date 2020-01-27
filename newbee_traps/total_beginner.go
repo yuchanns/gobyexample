@@ -58,5 +58,10 @@ func ImmutableStrings() (string, string) {
 	yrunes[0] = '世'
 	yrunes[1] = '界'
 
-	return string(xbytes), string(yrunes)
+	y = string(yrunes)
+
+	fmt.Println(x[0])
+	fmt.Println(y[0:3])
+
+	return string(xbytes), y
 }
