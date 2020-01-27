@@ -38,3 +38,21 @@ func TestImmutableStrings(t *testing.T) {
 	assert.Equal(t, "Test", x)
 	assert.Equal(t, "世界", y)
 }
+
+func TestValidateStringAndLength(t *testing.T) {
+	result, length, cLength := ValidateStringAndLength("♥\xfe")
+	assert.False(t, result)
+	assert.Equal(t, 4, length)
+	assert.Equal(t, 2, cLength)
+}
+
+func TestNilChannel(t *testing.T) {
+	NilChannel()
+}
+
+func TestJsonUnmarshalNumberic(t *testing.T) {
+	status1, status2, status3 := JsonUnmarshalNumberic()
+	assert.IsType(t, uint64(1), status1)
+	assert.IsType(t, int64(1), status2)
+	assert.IsType(t, uint64(1), status3)
+}

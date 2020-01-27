@@ -1,6 +1,13 @@
 package newbee_traps
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"time"
+	"unicode/utf8"
+)
 
 func NilInitVariableWithExplicitType() interface{} {
 	var x interface{} = nil
@@ -58,10 +65,86 @@ func ImmutableStrings() (string, string) {
 	yrunes[0] = '世'
 	yrunes[1] = '界'
 
-	y = string(yrunes)
-
 	fmt.Println(x[0])
-	fmt.Println(y[0:3])
 
-	return string(xbytes), y
+	for _, v := range yrunes {
+		fmt.Printf("%#x\n", v)
+	}
+
+	return string(xbytes), string(yrunes)
+}
+
+func ValidateStringAndLength(data string) (bool, int, int) {
+	result := utf8.ValidString(data)
+	length := len(data)
+	cLength := utf8.RuneCountInString(data)
+
+	return result, length, cLength
+}
+
+func NilChannel() {
+	inCh := make(chan int)
+	outCh := make(chan int)
+
+	go func() {
+		var in <-chan int = inCh
+		var out chan<- int
+		var val int
+
+		for {
+			select {
+			case out <- val:
+				println("--------")
+				out = nil
+				in = inCh
+			case val = <-in:
+				println("++++++++++")
+				out = outCh
+				in = nil
+			}
+		}
+	}()
+
+	go func() {
+		for r := range outCh {
+			fmt.Println("Result: ", r)
+		}
+	}()
+
+	time.Sleep(0)
+	inCh <- 1
+	inCh <- 2
+	time.Sleep(3 * time.Second)
+}
+
+func JsonUnmarshalNumberic() (uint64, int64, uint64) {
+	var data = []byte(`{"status": 200}`)
+	var result map[string]interface{}
+
+	if err := json.Unmarshal(data, &result); err != nil {
+		log.Fatalln(err)
+	}
+
+	var status1 = uint64(result["status"].(float64)) // 第一种方法，先转成uint64再使用
+
+	var decoder = json.NewDecoder(bytes.NewReader(data))
+	decoder.UseNumber()
+
+	if err := decoder.Decode(&result); err != nil {
+		log.Fatalln(err)
+	}
+
+	var status2, _ = result["status"].(json.Number).Int64() // 第二种方法，使用Decoder明确指定数字类型
+
+	var resultS struct {
+		Status uint64 `json:"status"`
+	}
+
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&result); err != nil {
+		log.Fatalln(err)
+	}
+
+	var status3 = resultS.Status // 第三种方法，使用结构体
+
+	return status1, status2, status3
 }
