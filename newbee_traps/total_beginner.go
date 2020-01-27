@@ -49,10 +49,14 @@ func MultiDimension() [][]int {
 	return table
 }
 
-func ImmutableStrings() string {
+func ImmutableStrings() (string, string) {
 	x := "test"
 	xbytes := []byte(x)
 	xbytes[0] = 'T'
+	y := "sj"
+	yrunes := []rune(y)
+	yrunes[0] = '世'
+	yrunes[1] = '界'
 
-	return string(xbytes)
+	return string(xbytes), string(yrunes)
 }

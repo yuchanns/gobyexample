@@ -34,6 +34,7 @@ func TestMultiDimension(t *testing.T) {
 }
 
 func TestImmutableStrings(t *testing.T) {
-	x := ImmutableStrings()
+	x, y := ImmutableStrings()
 	assert.Equal(t, "Test", x)
+	assert.Equal(t, "世界", y)
 }
