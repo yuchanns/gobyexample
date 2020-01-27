@@ -57,3 +57,11 @@ func TestJsonUnmarshalNumberic(t *testing.T) {
 	assert.Equal(t, int64(200), status2)
 	assert.Equal(t, uint64(200), status3)
 }
+
+func TestJsonUnmarshalUncertainType(t *testing.T) {
+	records := [][]byte{
+		[]byte(`{"status": 200, "tag": "one"}`),
+		[]byte(`{"status": "ok", "tag": "two"}`),
+	}
+	JsonUnmarshalUncertainType(records)
+}

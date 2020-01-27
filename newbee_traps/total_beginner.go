@@ -147,3 +147,28 @@ func JsonUnmarshalNumberic(data []byte) (uint64, int64, uint64) {
 
 	return status1, status2, status3
 }
+
+func JsonUnmarshalUncertainType(records [][]byte) {
+	for _, record := range records {
+		var result struct {
+			StatusCode uint64          `json:"-"`
+			StatusName string          `json:"-"`
+			Status     json.RawMessage `json:"status"`
+			Tag        string          `json:"tag"`
+		}
+
+		if err := json.NewDecoder(bytes.NewReader(record)).Decode(&result); err != nil {
+			log.Fatalln(err)
+		}
+
+		var name string
+		var code uint64
+		if err := json.Unmarshal(result.Status, &name); err == nil {
+			result.StatusName = name
+		} else if err := json.Unmarshal(result.Status, &code); err == nil {
+			result.StatusCode = code
+		}
+
+		fmt.Printf("result => %+v\n", result)
+	}
+}
