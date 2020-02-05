@@ -1,9 +1,11 @@
 package markdown
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestMdRun(t *testing.T) {
-	print(string(MdRun([]byte(`
+var content = []byte(`
 # h1 Heading 8-)
 ## h2 Heading
 ### h3 Heading
@@ -84,19 +86,19 @@ Indented code
 
 Block code "fences" ` +
 
-		"```" + `
+	"```" + `
 	Sample text here...` +
-		"```" + `
+	"```" + `
 
 Syntax highlighting and line hightlighting` +
 
-		"```js{2}" + `
+	"```js{2}" + `
 	var foo = function (bar) {
 		return bar++;
 	};
 
 	console.log(foo(5));` +
-		"```" + `
+	"```" + `
 
 Line numbers
 ![](/images/line-numbers-mode.png)
@@ -143,7 +145,7 @@ With a reference later in the document defining the URL location:
 
 ## Plugins` +
 
-		"The killer feature of `markdown-it` is very effective support of" + `
+	"The killer feature of `markdown-it` is very effective support of" + `
 [syntax plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin).
 
 
@@ -209,5 +211,19 @@ Add links to GitHub Sponsors or third-party methods your repository accepts for 
 ::: danger Danger Zone
 Once you delete a repository, there is no going back. Please be certain.
 :::
-`))))
+`)
+
+func TestMdRun(t *testing.T) {
+	print(string(MdRun(content)))
+}
+
+func TestMdParse(t *testing.T) {
+	ast := MdParse(content) // document
+	fmt.Println("root type is:", ast.Type)
+	fc := ast.FirstChild // head h1
+	fmt.Println("node type is:", fc.Type)
+	fmt.Println("head level is:", fc.HeadingData.Level)
+	fmt.Println("content is:", string(fc.FirstChild.Literal))
+	n1 := fc.Next // head h2
+	fmt.Println(string(n1.FirstChild.Literal))
 }
