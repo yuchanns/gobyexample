@@ -14,6 +14,11 @@ func BenchmarkMarshal(b *testing.B) {
 	_, _ = Marshal()
 }
 
+func TestMonkeyPatch(t *testing.T) {
+	_, err := MonkeyPatch()
+	assert.Nil(t, err)
+}
+
 func TestRegisterEncoder(t *testing.T) {
 	_, err := RegisterEncoder()
 	assert.Nil(t, err)

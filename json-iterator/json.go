@@ -1,6 +1,8 @@
 package json_iterator
 
 import (
+	"bou.ke/monkey"
+	"encoding/json"
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
 	"strings"
@@ -39,7 +41,35 @@ func Marshal() ([]byte, error) {
 
 	//json := jsoniter.ConfigCompatibleWithStandardLibrary
 	//sjson, err := json.Marshal(s)
-	sjson, err := jsoniter.Marshal(s)
+	sjson, err := jsoniter.Marshal(&s)
+
+	if err == nil {
+		fmt.Println(string(sjson))
+	}
+
+	return sjson, err
+}
+
+func MonkeyPatch() ([]byte, error) {
+	s := Student{
+		ID:     1,
+		Age:    27,
+		Gender: 1,
+		Name:   "yuchanns",
+		Location: Location{
+			Country:  "China",
+			Province: "Guangdong",
+			City:     "Shenzhen",
+			District: "Nanshan",
+		},
+	}
+
+	monkey.Patch(json.Marshal, func(v interface{}) ([]byte, error) {
+		println("via monkey patch")
+		return jsoniter.Marshal(v)
+	})
+
+	sjson, err := json.Marshal(&s)
 
 	if err == nil {
 		fmt.Println(string(sjson))

@@ -3,6 +3,7 @@ module github.com/yuchanns/gobyexample
 go 1.13
 
 require (
+	bou.ke/monkey v1.0.2
 	github.com/DATA-DOG/go-sqlmock v1.4.0 // indirect
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/bwmarrin/snowflake v0.3.0
