@@ -19,6 +19,10 @@ func TestMonkeyPatch(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func BenchmarkMonkeyPatch(b *testing.B) {
+	_, _ = MonkeyPatch()
+}
+
 func TestRegisterEncoder(t *testing.T) {
 	_, err := RegisterEncoder()
 	assert.Nil(t, err)

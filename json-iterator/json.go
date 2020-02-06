@@ -3,7 +3,6 @@ package json_iterator
 import (
 	"bou.ke/monkey"
 	"encoding/json"
-	"fmt"
 	jsoniter "github.com/json-iterator/go"
 	"strings"
 	"unsafe"
@@ -25,45 +24,32 @@ type Location struct {
 	District string
 }
 
-func Marshal() ([]byte, error) {
-	s := Student{
-		ID:     1,
-		Age:    27,
-		Gender: 1,
-		Name:   "yuchanns",
-		Location: Location{
-			Country:  "China",
-			Province: "Guangdong",
-			City:     "Shenzhen",
-			District: "Nanshan",
-		},
-	}
+var s = Student{
+	ID:     1,
+	Age:    27,
+	Gender: 1,
+	Name:   "yuchanns",
+	Location: Location{
+		Country:  "China",
+		Province: "Guangdong",
+		City:     "Shenzhen",
+		District: "Nanshan",
+	},
+}
 
+func Marshal() ([]byte, error) {
 	//json := jsoniter.ConfigCompatibleWithStandardLibrary
 	//sjson, err := json.Marshal(s)
 	sjson, err := jsoniter.Marshal(&s)
 
 	if err == nil {
-		fmt.Println(string(sjson))
+		println(string(sjson))
 	}
 
 	return sjson, err
 }
 
 func MonkeyPatch() ([]byte, error) {
-	s := Student{
-		ID:     1,
-		Age:    27,
-		Gender: 1,
-		Name:   "yuchanns",
-		Location: Location{
-			Country:  "China",
-			Province: "Guangdong",
-			City:     "Shenzhen",
-			District: "Nanshan",
-		},
-	}
-
 	monkey.Patch(json.Marshal, func(v interface{}) ([]byte, error) {
 		println("via monkey patch")
 		return jsoniter.Marshal(v)
@@ -72,7 +58,7 @@ func MonkeyPatch() ([]byte, error) {
 	sjson, err := json.Marshal(&s)
 
 	if err == nil {
-		fmt.Println(string(sjson))
+		println(string(sjson))
 	}
 
 	return sjson, err
@@ -94,22 +80,10 @@ func (codec *locationAsStringCodec) Encode(ptr unsafe.Pointer, stream *jsoniter.
 
 func RegisterEncoder() ([]byte, error) {
 	jsoniter.RegisterTypeEncoder("json_iterator.Location", &locationAsStringCodec{})
-	s := Student{
-		ID:     1,
-		Age:    27,
-		Gender: 1,
-		Name:   "yuchanns",
-		Location: Location{
-			Country:  "China",
-			Province: "Guangdong",
-			City:     "Shenzhen",
-			District: "Nanshan",
-		},
-	}
-	sjson, err := jsoniter.Marshal(s)
+	sjson, err := jsoniter.Marshal(&s)
 
 	if err == nil {
-		fmt.Println(string(sjson))
+		println(string(sjson))
 	}
 
 	return sjson, err
