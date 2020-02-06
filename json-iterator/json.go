@@ -9,11 +9,11 @@ import (
 
 //Reference http://jsoniter.com/go-tips.html
 type Student struct {
-	ID       uint
-	Age      uint8
-	Gender   uint8
-	Name     string
-	Location Location
+	ID       uint     `json:"id"`
+	Age      uint8    `json:"age"`
+	Gender   uint8    `json:"gender"`
+	Name     string   `json:"name"`
+	Location Location `json:"location"`
 }
 
 type Location struct {

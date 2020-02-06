@@ -18,3 +18,7 @@ func TestRegisterEncoder(t *testing.T) {
 	_, err := RegisterEncoder()
 	assert.Nil(t, err)
 }
+
+func BenchmarkRegisterEncoder(b *testing.B) {
+	_, _ = RegisterEncoder()
+}
