@@ -13,7 +13,7 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/json-iterator/go v1.1.9 // indirect
+	github.com/json-iterator/go v1.1.9
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
