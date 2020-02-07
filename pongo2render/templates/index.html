@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<h1>{{ greet }} {{ obj }}</h1>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    setTimeout(function () {
+        alert("hello pop")
+    }, 2000)
+</script>
+{% endblock %}
