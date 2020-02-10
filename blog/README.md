@@ -1,3 +1,4 @@
+> **Deprecated**
 ## struct of tables
 
 ```sql
