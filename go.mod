@@ -8,12 +8,14 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.4.0 // indirect
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
+	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.9
