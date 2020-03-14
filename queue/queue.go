@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
@@ -17,12 +18,14 @@ type IMessage interface {
 // Queue can produce and consume messages
 // TODO: A Queue should have context to cancel the consumer process
 type Queue struct {
-	conn redis.Conn
+	pool *redis.Pool
 }
 
 func (q *Queue) lrem(queue string, reply interface{}) {
 	// redis tip: LREM queueName numbers msg
-	if _, err := q.conn.Do("LREM", queue, 1, reply); err != nil {
+	conn := q.pool.Get()
+	defer conn.Close()
+	if _, err := conn.Do("LREM", queue, 1, reply); err != nil {
 		fmt.Println("failed to lrem", err)
 	}
 }
@@ -30,12 +33,14 @@ func (q *Queue) lrem(queue string, reply interface{}) {
 func (q *Queue) rpoplpush(imsg IMessage, sourceQueue, destQueue string, block bool) (interface{}, IMessage, error) {
 	var r interface{}
 	var err error
+	conn := q.pool.Get()
+	defer conn.Close()
 	if block {
 		// redis tip: BROPLPUSH sourceQueueName destQueueName timeout
-		r, err = q.conn.Do("BRPOPLPUSH", sourceQueue, destQueue, 10)
+		r, err = conn.Do("BRPOPLPUSH", sourceQueue, destQueue, 1)
 	} else {
 		// redis tip: ROPLPUSH sourceQueueName destQueueName
-		r, err = q.conn.Do("RPOPLPUSH", sourceQueue, destQueue)
+		r, err = conn.Do("RPOPLPUSH", sourceQueue, destQueue)
 	}
 	if err != nil {
 		return nil, nil, err
@@ -75,17 +80,35 @@ func (q *Queue) ack(imsg IMessage, sourceQueue, destQueue string) {
 
 // InitReceiver will create goroutine to consume the msg implementing IMessage
 // the number decides how much goroutine to do consuming
-func (q *Queue) InitReceiver(msg IMessage, number int) {
+func (q *Queue) InitReceiver(ctx context.Context, msg IMessage, number int) func() {
 	prepareQueue := fmt.Sprintf("%s.prepare", msg.GetChannel())
-	doingQueue := fmt.Sprintf("%s.doing", msg.GetChannel())
 
 	if number <= 0 {
 		number = 1
 	}
 
+	// the quit channel is used for waiting goroutines exit
+	quit := make(chan struct{}, number)
+	// the cancel slice store cancel functions for child contexts used in goroutines
+	cancelSlice := make([]context.CancelFunc, number)
+
 	for i := 0; i < number; i++ {
-		go func() {
+		// create child context each per goroutine
+		childCtx, cancel := context.WithCancel(ctx)
+		// store each cancel function of child contexts into cancel slice
+		cancelSlice[i] = cancel
+
+		go func(ctx context.Context, number int) {
+			doingQueue := fmt.Sprintf("%s.doing%d", msg.GetChannel(), number)
 			for {
+				select {
+				case <-ctx.Done():
+					fmt.Println("context has been canceled")
+					quit <- struct{}{}
+					return
+				default:
+				}
+
 				reply, msg, err := q.rpoplpush(msg, prepareQueue, doingQueue, true)
 				if err != nil {
 					fmt.Println("failed to pop msg", err)
@@ -95,22 +118,35 @@ func (q *Queue) InitReceiver(msg IMessage, number int) {
 					continue
 				}
 				if err := msg.Resolve(); err == nil {
+					//time.Sleep(time.Second)
 					q.lrem(doingQueue, reply)
 				}
 				q.ack(msg, doingQueue, prepareQueue)
 			}
-		}()
+		}(childCtx, i) // the each variable i must be passed to goroutines immediately
 	}
+
+	cancelFunc := func() {
+		for i := 0; i < number; i++ {
+			cancel := cancelSlice[i]
+			cancel()
+			<-quit
+		}
+	}
+
 	fmt.Printf("%d receivers have been initialized\n", number)
+	return cancelFunc
 }
 
 // Delivery will send msg implementing IMessage into the queue to be consumed
 func (q *Queue) Delivery(msg IMessage) error {
+	conn := q.pool.Get()
+	defer conn.Close()
 	prepareQueue := fmt.Sprintf("%s.prepare", msg.GetChannel())
 	if msgJson, err := msg.Marshal(); err != nil {
 		return err
 	} else {
-		_, err := q.conn.Do("LPUSH", prepareQueue, msgJson)
+		_, err := conn.Do("LPUSH", prepareQueue, msgJson)
 		fmt.Println("produced", string(msgJson))
 
 		return err

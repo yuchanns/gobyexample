@@ -12,10 +12,22 @@ func TestQueue_Produce(t *testing.T) {
 	msg := &Message{name: "demoQueue", Content: map[string]string{
 		"order_no": strconv.FormatInt(time.Now().Unix(), 10),
 	}}
-	conn, err := redis.Dial("tcp", ":6379")
-	testutil.AssertNil(t, err)
-	defer conn.Close()
-	queue := &Queue{conn: conn}
-	err = queue.Delivery(msg)
-	testutil.AssertNil(t, err)
+	pool := &redis.Pool{
+		Dial: func() (conn redis.Conn, err error) {
+			return redis.Dial("tcp", ":6379")
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			if time.Since(t) < time.Minute {
+				return nil
+			}
+			_, err := c.Do("PING")
+			return err
+		},
+	}
+	queue := &Queue{pool: pool}
+	for {
+		err := queue.Delivery(msg)
+		testutil.AssertNil(t, err)
+		time.Sleep(time.Millisecond)
+	}
 }

@@ -1,24 +1,37 @@
 package main
 
 import (
+	"context"
 	"github.com/gomodule/redigo/redis"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
-	conn, err := redis.Dial("tcp", ":6379")
-	if err != nil {
-		panic(err)
+	pool := &redis.Pool{
+		Dial: func() (conn redis.Conn, err error) {
+			return redis.Dial("tcp", ":6379")
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			if time.Since(t) < time.Minute {
+				return nil
+			}
+			_, err := c.Do("PING")
+			return err
+		},
 	}
-	defer conn.Close()
-	queue := &Queue{conn: conn}
+	queue := &Queue{pool: pool}
 
 	msg := &Message{
 		name: "demoQueue",
 	}
-	queue.InitReceiver(msg, 1)
+
+	// make a main context
+	ctx := context.Background()
+	// pass the main context to queue
+	cancelFunc := queue.InitReceiver(ctx, msg, 10)
 
 	quit := make(chan os.Signal, 1)
 
@@ -27,8 +40,7 @@ func main() {
 	for {
 		switch <-quit {
 		case syscall.SIGINT:
-			os.Exit(0)
-		default:
+			cancelFunc()
 			return
 		}
 	}
