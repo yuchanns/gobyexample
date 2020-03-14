@@ -31,19 +31,42 @@ func (c *consumer) GetChannel() string {
 
 func (c *consumer) Ack() {
 	prepareName := fmt.Sprintf("%s.prepare", c.name)
+	doingName := fmt.Sprintf("%s.doing", c.name)
 
 	go func() {
 		fmt.Println("start loop...")
 		for {
-			if r, err := redis.ByteSlices(c.client.Do("BRPOP", prepareName, 10)); err == nil {
-				msg := &Message{}
-				if err := jsoniter.Unmarshal(r[1], msg); err == nil {
-					c.Consume(msg)
+			// BROPLPUSH sourceQueueName destQueueName timeout
+			if r, err := c.client.Do("BRPOPLPUSH", prepareName, doingName, 10); err == nil {
+				if rUint8s, ok := r.([]uint8); ok {
+					msg := &Message{}
+					if err := jsoniter.Unmarshal(rUint8s, msg); err == nil {
+						if c.Consume(msg) {
+							// LREM queueName numbers msg
+							if _, err := c.client.Do("LREM", doingName, 1, r); err != nil {
+								fmt.Println("failed to lrem", err)
+							}
+						}
+					} else {
+						fmt.Println("failed to pop msg", err)
+					}
 				} else {
-					fmt.Println("failed to pop msg", err)
+					fmt.Println("failed to convert reply to []uint8")
 				}
 			} else {
 				fmt.Println(err)
+			}
+			// ack
+			for {
+				if reply, err := c.client.Do("RPOPLPUSH", doingName, prepareName); err != nil {
+					fmt.Println("error happens", err)
+				} else {
+					if reply == nil {
+						break
+					} else {
+						fmt.Printf("got undo msg in the queue %s\n", doingName)
+					}
+				}
 			}
 		}
 	}()
