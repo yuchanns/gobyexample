@@ -1,22 +1,34 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gomodule/redigo/redis"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-	c, err := redis.Dial("tcp", ":6379")
+	conn, err := redis.Dial("tcp", ":6379")
 	if err != nil {
 		panic(err)
 	}
-	m := NewConsumer(func(msg *Message) bool {
-		fmt.Println("Got the message content is", msg.Content)
-		return true
-	}, "test", c)
-	DoConsume(m)
-}
+	queue := &Queue{conn: conn}
 
-func DoConsume(c IConsumer) {
-	c.Ack()
+	msg := &Message{
+		name: "demoQueue",
+	}
+	queue.InitConsumer(msg, 1)
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGINT)
+
+	for {
+		switch <-quit {
+		case syscall.SIGINT:
+			os.Exit(0)
+		default:
+			return
+		}
+	}
 }

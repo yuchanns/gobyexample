@@ -3,19 +3,18 @@ package main
 import (
 	"github.com/coreos/etcd/pkg/testutil"
 	"github.com/gomodule/redigo/redis"
+	"strconv"
 	"testing"
 	"time"
 )
 
-func TestProducer_Produce(t *testing.T) {
-	c, err := redis.Dial("tcp", ":6379")
+func TestQueue_Produce(t *testing.T) {
+	msg := &Message{name: "demoQueue", Content: map[string]string{
+		"order_no": strconv.FormatInt(time.Now().Unix(), 10),
+	}}
+	conn, err := redis.Dial("tcp", ":6379")
 	testutil.AssertNil(t, err)
-	p := NewProducer("test", c)
-	p.Produce(&Message{
-		Content: []string{
-			"hello",
-			"world",
-		},
-		Id: time.Now().Unix(),
-	})
+	queue := &Queue{conn: conn}
+	err = queue.Produce(msg)
+	testutil.AssertNil(t, err)
 }
