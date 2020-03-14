@@ -15,7 +15,7 @@ func (m *Message) GetChannel() string {
 }
 
 func (m *Message) Resolve() error {
-	fmt.Printf("consumed %+v", m.Content)
+	fmt.Printf("consumed %+v\n", m.Content)
 	return nil
 }
 
