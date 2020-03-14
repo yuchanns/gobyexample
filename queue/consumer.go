@@ -42,13 +42,11 @@ func (c *consumer) Ack() {
 					msg := &Message{}
 					if err := jsoniter.Unmarshal(rUint8s, msg); err == nil {
 						if c.Consume(msg) {
-							// LREM queueName numbers msg
-							if _, err := c.client.Do("LREM", doingName, 1, r); err != nil {
-								fmt.Println("failed to lrem", err)
-							}
+							c.lrem(doingName, r)
 						}
 					} else {
-						fmt.Println("failed to pop msg", err)
+						fmt.Println("failed to unmarshal msg", err)
+						c.lrem(doingName, r)
 					}
 				} else {
 					fmt.Println("failed to convert reply to []uint8")
@@ -83,6 +81,13 @@ func (c *consumer) Ack() {
 		default:
 			return
 		}
+	}
+}
+
+func (c *consumer) lrem(queueName string, replay interface{}) {
+	// LREM queueName numbers msg
+	if _, err := c.client.Do("LREM", queueName, 1, replay); err != nil {
+		fmt.Println("failed to lrem", err)
 	}
 }
 
