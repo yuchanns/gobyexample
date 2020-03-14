@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
+	"time"
 )
 
 type Message struct {
@@ -15,6 +16,7 @@ func (m *Message) GetChannel() string {
 }
 
 func (m *Message) Resolve() error {
+	time.Sleep(time.Second)
 	fmt.Printf("consumed %+v\n", m.Content)
 	return nil
 }

@@ -117,7 +117,6 @@ func (q *Queue) InitReceiver(ctx context.Context, msg IMessage, number int) func
 					continue
 				}
 				if err := msg.Resolve(); err == nil {
-					//time.Sleep(time.Second)
 					q.lrem(doingQueue, reply)
 				}
 				q.ack(msg, doingQueue, prepareQueue)
