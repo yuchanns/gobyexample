@@ -8,7 +8,7 @@ import (
 
 // IMessage is the interface which Queue accept
 type IMessage interface {
-	Consume() error
+	Resolve() error
 	GetChannel() string
 	Marshal() ([]byte, error)
 	Unmarshal([]uint8) (IMessage, error)
@@ -73,9 +73,9 @@ func (q *Queue) ack(imsg IMessage, sourceQueue, destQueue string) {
 	}
 }
 
-// InitConsumer will create goroutine to consume the msg implementing IMessage
+// InitReceiver will create goroutine to consume the msg implementing IMessage
 // the number decides how much goroutine to do consuming
-func (q *Queue) InitConsumer(msg IMessage, number int) {
+func (q *Queue) InitReceiver(msg IMessage, number int) {
 	prepareQueue := fmt.Sprintf("%s.prepare", msg.GetChannel())
 	doingQueue := fmt.Sprintf("%s.doing", msg.GetChannel())
 
@@ -94,18 +94,18 @@ func (q *Queue) InitConsumer(msg IMessage, number int) {
 				if msg == nil {
 					continue
 				}
-				if err := msg.Consume(); err == nil {
+				if err := msg.Resolve(); err == nil {
 					q.lrem(doingQueue, reply)
 				}
 				q.ack(msg, doingQueue, prepareQueue)
 			}
 		}()
 	}
-	fmt.Println("consumer initialed")
+	fmt.Printf("%d receivers have been initialized\n", number)
 }
 
-// Produce will produce msg implementing IMessage into the queue to be consumed
-func (q *Queue) Produce(msg IMessage) error {
+// Delivery will send msg implementing IMessage into the queue to be consumed
+func (q *Queue) Delivery(msg IMessage) error {
 	prepareQueue := fmt.Sprintf("%s.prepare", msg.GetChannel())
 	if msgJson, err := msg.Marshal(); err != nil {
 		return err

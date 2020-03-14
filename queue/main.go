@@ -17,7 +17,7 @@ func main() {
 	msg := &Message{
 		name: "demoQueue",
 	}
-	queue.InitConsumer(msg, 1)
+	queue.InitReceiver(msg, 1)
 
 	quit := make(chan os.Signal, 1)
 
