@@ -16,7 +16,6 @@ type IMessage interface {
 }
 
 // Queue can produce and consume messages
-// TODO: A Queue should have context to cancel the consumer process
 type Queue struct {
 	pool *redis.Pool
 }
