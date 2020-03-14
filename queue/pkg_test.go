@@ -14,6 +14,7 @@ func TestQueue_Produce(t *testing.T) {
 	}}
 	conn, err := redis.Dial("tcp", ":6379")
 	testutil.AssertNil(t, err)
+	defer conn.Close()
 	queue := &Queue{conn: conn}
 	err = queue.Delivery(msg)
 	testutil.AssertNil(t, err)

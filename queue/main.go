@@ -12,6 +12,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer conn.Close()
 	queue := &Queue{conn: conn}
 
 	msg := &Message{
