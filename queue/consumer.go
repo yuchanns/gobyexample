@@ -38,18 +38,20 @@ func (c *consumer) Ack() {
 		for {
 			// BROPLPUSH sourceQueueName destQueueName timeout
 			if r, err := c.client.Do("BRPOPLPUSH", prepareName, doingName, 10); err == nil {
-				if rUint8s, ok := r.([]uint8); ok {
-					msg := &Message{}
-					if err := jsoniter.Unmarshal(rUint8s, msg); err == nil {
-						if c.Consume(msg) {
+				if r != nil {
+					if rUint8s, ok := r.([]uint8); ok {
+						msg := &Message{}
+						if err := jsoniter.Unmarshal(rUint8s, msg); err == nil {
+							if c.Consume(msg) {
+								c.lrem(doingName, r)
+							}
+						} else {
+							fmt.Println("failed to unmarshal msg", err)
 							c.lrem(doingName, r)
 						}
 					} else {
-						fmt.Println("failed to unmarshal msg", err)
-						c.lrem(doingName, r)
+						fmt.Println("failed to convert reply to []uint8")
 					}
-				} else {
-					fmt.Println("failed to convert reply to []uint8")
 				}
 			} else {
 				fmt.Println(err)
