@@ -102,7 +102,7 @@ func (q *Queue) InitReceiver(ctx context.Context, msg IMessage, number int) func
 			for {
 				select {
 				case <-ctx.Done():
-					fmt.Println("context has been canceled")
+					fmt.Println("context has been cancelled")
 					quit <- struct{}{}
 					return
 				default:
