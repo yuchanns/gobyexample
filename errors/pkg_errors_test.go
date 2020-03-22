@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/coreos/etcd/pkg/testutil"
 	"github.com/pkg/errors"
+	"os"
 	"testing"
 )
 
@@ -27,6 +28,19 @@ func TestPkgWithStack(t *testing.T) {
 	fmt.Printf("%+v\n", errors.Cause(err5))
 }
 
+func TestPkgErrorAsIs(t *testing.T) {
+	err := virtualErr()
+	var err2 *os.PathError
+	testutil.AssertTrue(t, errors2.As(err, &err2))
+	fmt.Println("file not found")
+	fmt.Printf("%+v\n", err)
+	err3 := virtualErr2()
+	var err4 *whateverErr
+	testutil.AssertTrue(t, errors2.As(err3, &err4))
+	fmt.Println("display a cutom method")
+	fmt.Println(err4.CustomError())
+}
+
 type whateverErr struct {
 	msg string
 }
@@ -35,18 +49,21 @@ func (w *whateverErr) Error() string {
 	return w.msg
 }
 
-type anotherErr struct {
-	msg string
+func (w *whateverErr) CustomError() string {
+	return "a text that tells file not found~"
 }
 
-func (a *anotherErr) Error() string {
-	return a.msg
+func virtualErr() error {
+	if _, err := os.Open("non-existing"); err != nil {
+		return errors.WithStack(err)
+	}
+	return errors.WithStack(&whateverErr{msg: "this is a whatever error"})
 }
 
-func TestPkgErrorAsIs(t *testing.T) {
-	werrstack := errors.WithStack(&whateverErr{msg: "this is a whatever error"})
-	aerrstack := errors.WithStack(errors.WithMessage(werrstack, "this is another error"))
-	var werr2 *whateverErr
-	testutil.AssertTrue(t, errors2.As(aerrstack, &werr2))
-	testutil.AssertTrue(t, errors2.Is(aerrstack, werrstack))
+func virtualErr2() error {
+	_, err := os.Open("non-existing")
+	if err != nil {
+		return errors.WithStack(&whateverErr{msg: "this is a whatever error"})
+	}
+	return errors.WithStack(err)
 }
