@@ -31,14 +31,22 @@ type whateverErr struct {
 	msg string
 }
 
-func (e *whateverErr) Error() string {
-	return e.msg
-
+func (w *whateverErr) Error() string {
+	return w.msg
 }
 
-func TestPkgErrorAs(t *testing.T) {
-	err1 := &whateverErr{msg: "error 1"}
-	err2 := errors.WithStack(err1)
-	var err3 *whateverErr
-	testutil.AssertTrue(t, errors2.As(err2, &err3))
+type anotherErr struct {
+	msg string
+}
+
+func (a *anotherErr) Error() string {
+	return a.msg
+}
+
+func TestPkgErrorAsIs(t *testing.T) {
+	werrstack := errors.WithStack(&whateverErr{msg: "this is a whatever error"})
+	aerrstack := errors.WithStack(errors.WithMessage(werrstack, "this is another error"))
+	var werr2 *whateverErr
+	testutil.AssertTrue(t, errors2.As(aerrstack, &werr2))
+	testutil.AssertTrue(t, errors2.Is(aerrstack, werrstack))
 }
