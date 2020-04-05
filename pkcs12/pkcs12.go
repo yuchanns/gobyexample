@@ -57,14 +57,15 @@ func KeyGen() error {
 		return err
 	}
 
+	if _, _, err := pkcs12.Decode(pfxBytes, pkcs12.DefaultPassword); err != nil {
+		return err
+	}
+
 	if err := ioutil.WriteFile(
 		priPath,
 		pfxBytes,
 		os.ModePerm,
 	); err != nil {
-		return err
-	}
-	if _, _, err := pkcs12.Decode(pfxBytes, pkcs12.DefaultPassword); err != nil {
 		return err
 	}
 	certOut, err := os.Create(pubPath)
