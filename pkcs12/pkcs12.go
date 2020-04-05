@@ -6,13 +6,17 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"fmt"
+	"io/ioutil"
 	"math/big"
 	"os"
 	"path"
+	"software.sslmate.com/src/go-pkcs12"
 )
 
 func KeyGen() error {
+	baseDir := os.TempDir()
+	priPath := path.Join(baseDir, "pri.pfx")
+	pubPath := path.Join(baseDir, "pub.pem")
 	keyBytes, err := rsa.GenerateKey(rand.Reader, 1024)
 
 	if err != nil {
@@ -23,59 +27,47 @@ func KeyGen() error {
 		return err
 	}
 
-	dn := pkix.Name{
-		Country:            []string{"EN"},
-		Organization:       []string{"org"},
-		OrganizationalUnit: []string{"org"},
-		Locality:           []string{"city"},
-		Province:           []string{"province"},
-		CommonName:         "name",
-	}
-	//asn1Dn, err := asn1.Marshal(dn)
-	//if err != nil {
-	//	return err
-	//}
-
-	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
-	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
-
-	if err != nil {
-		return err
-	}
-	template := x509.Certificate{
-		Subject:            dn,
-		SignatureAlgorithm: x509.SHA256WithRSA,
-		SerialNumber:       serialNumber,
+	template := &x509.Certificate{
+		SerialNumber: big.NewInt(1),
+		Subject: pkix.Name{
+			Country:            []string{"EN"},
+			Organization:       []string{"org"},
+			OrganizationalUnit: []string{"org"},
+			Locality:           []string{"city"},
+			Province:           []string{"province"},
+			CommonName:         "name",
+		},
 	}
 
-	//pfxBytes, err := pkcs12.Encode(rand.Reader, keyBytes, &template, []*x509.Certificate{}, pkcs12.DefaultPassword)
-	//
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//if err := ioutil.WriteFile(
-	//	"/Users/yuchanns/Coding/golang/gobyexample/pkcs12/pri.pfx",
-	//	pfxBytes,
-	//	os.ModePerm,
-	//); err != nil {
-	//	return err
-	//}
-	//
-	//_, _, err = pkcs12.Decode(pfxBytes, pkcs12.DefaultPassword)
-	//
-	//return err
-
-	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &keyBytes.PublicKey, keyBytes)
+	derBytes, err := x509.CreateCertificate(rand.Reader, template, template, &keyBytes.PublicKey, keyBytes)
 
 	if err != nil {
 		return err
 	}
 
-	savePath := path.Join(os.TempDir(), "/pub.pem")
-	certOut, err := os.Create(savePath)
+	cert, err := x509.ParseCertificate(derBytes)
 
-	fmt.Println(os.TempDir())
+	if err != nil {
+		return err
+	}
+
+	pfxBytes, err := pkcs12.Encode(rand.Reader, keyBytes, cert, []*x509.Certificate{}, pkcs12.DefaultPassword)
+
+	if err != nil {
+		return err
+	}
+
+	if err := ioutil.WriteFile(
+		priPath,
+		pfxBytes,
+		os.ModePerm,
+	); err != nil {
+		return err
+	}
+	if _, _, err := pkcs12.Decode(pfxBytes, pkcs12.DefaultPassword); err != nil {
+		return err
+	}
+	certOut, err := os.Create(pubPath)
 
 	if err != nil {
 		return err
