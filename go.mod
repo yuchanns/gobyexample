@@ -13,6 +13,7 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/go-playground/validator/v10 v10.3.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
