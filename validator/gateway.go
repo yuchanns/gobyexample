@@ -7,13 +7,12 @@ import (
 	_interface "github.com/yuchanns/gobyexample/validator/interface"
 )
 
-var Services = map[string]func() _interface.AService{
-	"ant": func() _interface.AService {
-		return &ant.Service{}
-	},
+var Services = map[string]func() _interface.IService{
+	"ant": ant.NewService,
 }
 
-func Register(svc _interface.AService, decoder *json.Decoder) (interface{}, error) {
+// the unified entrance for register
+func Register(svc _interface.IService, decoder *json.Decoder) (interface{}, error) {
 	register, err := svc.GetRegisterStruct()
 	if err != nil {
 		return nil, err
@@ -27,4 +26,21 @@ func Register(svc _interface.AService, decoder *json.Decoder) (interface{}, erro
 	}
 
 	return register, nil
+}
+
+// the unified entrance for modify
+func Modify(svc _interface.IService, decoder *json.Decoder) (interface{}, error) {
+	modify, err := svc.GetModifyStruct()
+	if err != nil {
+		return nil, err
+	}
+	if err := decoder.Decode(modify); err != nil {
+		return nil, err
+	}
+	validate := validator.New()
+	if err := validate.Struct(modify); err != nil {
+		return nil, err
+	}
+
+	return modify, nil
 }
