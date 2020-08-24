@@ -5,7 +5,7 @@ import "fmt"
 type State int
 
 const (
-	Opened State = iota
+	Opened State = iota + 1
 	Closed
 	Locked
 	Unlocked
