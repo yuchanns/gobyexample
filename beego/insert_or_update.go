@@ -13,7 +13,7 @@ type User struct {
 }
 
 type TExchangeInfo struct {
-	ID           int64     `orm:"column(id);auto;pk"`
+	ID           int64     `orm:"column(id);pk"`
 	DeparmentID  int64     `orm:"column(deparment_id)"`
 	Times        uint      `orm:"column(times)"`
 	Number       uint      `orm:"column(number)"`
