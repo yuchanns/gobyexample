@@ -117,6 +117,8 @@ func QueryRows() error {
 	}
 	defer o.Close()
 
+	o.LogMode(true)
+
 	mock.ExpectQuery("SELECT").WillReturnRows(rows)
 
 	var results []*Order
