@@ -1,4 +1,4 @@
-package beego
+package sqlmock
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
