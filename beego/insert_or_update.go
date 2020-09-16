@@ -4,11 +4,20 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
 )
 
 type User struct {
 	ID     int `orm:"pk"`
 	Status int
+}
+
+type TExchangeInfo struct {
+	ID           int64     `orm:"column(id);auto;pk"`
+	DeparmentID  int64     `orm:"column(deparment_id)"`
+	Times        uint      `orm:"column(times)"`
+	Number       uint      `orm:"column(number)"`
+	Lastmodified time.Time `orm:"column(lastmodified);type(datetime);auto_now"`
 }
 
 func InsertOrUpdatePrintSql() error {
@@ -27,10 +36,12 @@ func InsertOrUpdatePrintSql() error {
 		return err
 	}
 	_ = o.Using("db1")
-	orm.RegisterModel(new(User))
-	u := &User{
-		ID:     1,
-		Status: 0,
+	orm.RegisterModel(new(TExchangeInfo))
+	u := &TExchangeInfo{
+		ID:          10086,
+		DeparmentID: 1,
+		Times:       0,
+		Number:      10,
 	}
 	_, err = o.InsertOrUpdate(u)
 
