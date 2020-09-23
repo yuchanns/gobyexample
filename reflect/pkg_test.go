@@ -19,6 +19,7 @@ func TestReflect(t *testing.T) {
 	pvo := reflect.ValueOf(&u)
 	fmt.Println("type is ", to)
 	fmt.Println("value is ", vo)
+	fmt.Printf("address is %p\n", pvo.Interface().(*User))
 
 	for i := 0; i < to.NumField(); i++ {
 		fieldStruct := to.Field(i)
