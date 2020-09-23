@@ -17,6 +17,7 @@ func TestReflect(t *testing.T) {
 	vo := reflect.ValueOf(u)
 	pto := reflect.TypeOf(&u)
 	pvo := reflect.ValueOf(&u)
+	fmt.Println(to.Kind() == reflect.Struct)
 	fmt.Println("type is ", to)
 	fmt.Println("value is ", vo)
 	fmt.Printf("address is %p\n", pvo.Interface().(*User))
