@@ -1,2 +1,4 @@
 .idea
 vendor
+*.out
+pprof/pprof
