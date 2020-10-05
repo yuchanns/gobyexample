@@ -20,7 +20,7 @@ func NewBorder(x, y int, ch rune) *Border {
 		Entity: tl.NewEntity(x, y, 1, 1),
 		Ch:     ch,
 	}
-	cell := &tl.Cell{Fg: tl.ColorWhite, Ch: border.Ch}
+	cell := &tl.Cell{Bg: tl.RgbTo256Color(224, 211, 179), Ch: border.Ch}
 	border.Fill(cell)
 
 	return border
@@ -38,13 +38,6 @@ func (player *Player) Tick(event tl.Event) {
 			player.SetPosition(player.prevX, player.prevY-1)
 		case tl.KeyArrowDown:
 			player.SetPosition(player.prevX, player.prevY+1)
-		}
-	} else if event.Type == tl.EventMouse {
-		if event.Key == tl.MouseRelease {
-			screenWidth, screenHeight := player.screen.Size()
-			diffX := event.MouseX - screenWidth/2
-			diffY := event.MouseY - screenHeight/2
-			player.SetPosition(player.prevX+diffX, player.prevY+diffY)
 		}
 	}
 }
@@ -76,10 +69,10 @@ func InitBorder(level *tl.BaseLevel, width, height int) {
 		level.AddEntity(bottomBorder)
 	}
 	// left and right border
-	rightX := width - 2
+	rightX := width - 1
 	for y := 0; y < height; y++ {
-		leftBorder := NewBorder(1, y, '‖')
-		rightBorder := NewBorder(rightX, y, '‖')
+		leftBorder := NewBorder(0, y, ' ')
+		rightBorder := NewBorder(rightX, y, ' ')
 		level.AddEntity(leftBorder)
 		level.AddEntity(rightBorder)
 	}
@@ -89,9 +82,9 @@ func main() {
 	game := tl.NewGame()
 
 	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.ColorGreen,
+		Bg: tl.RgbTo256Color(172, 186, 207),
 		Fg: tl.ColorBlack,
-		Ch: 'w',
+		Ch: ' ',
 	})
 
 	InitBorder(level, 50, 50)
@@ -101,10 +94,15 @@ func main() {
 		level:  level,
 		screen: game.Screen(),
 	}
-	// Set the character at position (0, 0) on the entity.
-	player.SetCell(0, 0, &tl.Cell{Fg: tl.ColorRed, Ch: '♂'})
+
+	{
+		c := &tl.Cell{Bg: tl.ColorRed, Ch: ' '}
+		player.Fill(c)
+	}
 	level.AddEntity(&player)
 
 	game.Screen().SetLevel(level)
+	game.Screen().EnablePixelMode()
+
 	game.Start()
 }
