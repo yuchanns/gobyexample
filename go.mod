@@ -6,6 +6,7 @@ require (
 	bou.ke/monkey v1.0.2
 	fyne.io/fyne v1.2.3
 	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/JoelOtter/termloop v0.0.0-20200516124750-8b96492addf4
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/astaxie/beego v1.12.2
 	github.com/bwmarrin/snowflake v0.3.0
@@ -28,8 +29,10 @@ require (
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/panjf2000/ants/v2 v2.4.2
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/pkg/errors v0.9.1
