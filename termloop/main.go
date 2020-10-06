@@ -1,13 +1,17 @@
 package main
 
-import tl "github.com/JoelOtter/termloop"
+import (
+	tl "github.com/JoelOtter/termloop"
+)
 
 type Player struct {
 	*tl.Entity
-	prevX  int
-	prevY  int
-	level  *tl.BaseLevel
-	screen *tl.Screen
+	prevX        int
+	prevY        int
+	level        *tl.BaseLevel
+	screen       *tl.Screen
+	borderWidth  int
+	borderHeight int
 }
 
 type Border struct {
@@ -20,7 +24,7 @@ func NewBorder(x, y int, ch rune) *Border {
 		Entity: tl.NewEntity(x, y, 1, 1),
 		Ch:     ch,
 	}
-	cell := &tl.Cell{Bg: tl.RgbTo256Color(224, 211, 179), Ch: border.Ch}
+	cell := &tl.Cell{Bg: tl.RgbTo256Color(125, 132, 172), Ch: border.Ch}
 	border.Fill(cell)
 
 	return border
@@ -54,7 +58,27 @@ func (player *Player) Collide(collision tl.Physical) {
 func (player *Player) Draw(screen *tl.Screen) {
 	screenWidth, screenHeight := screen.Size()
 	x, y := player.Position()
-	player.level.SetOffset(screenWidth/2-x, screenHeight/2-y)
+	middleWidth := screenWidth / 2
+	middleHeight := screenHeight / 2
+	widthToBorderRight := player.borderWidth - x
+	heightToBorderRight := player.borderHeight - y
+	var offsetX, offsetY int
+	if player.borderWidth > screenWidth {
+		if x > middleWidth && widthToBorderRight > middleWidth {
+			offsetX = middleWidth - x
+		} else if widthToBorderRight <= middleWidth {
+			offsetX = screenWidth - player.borderWidth
+		}
+	}
+	if player.borderHeight > screenHeight {
+		if y > middleHeight && heightToBorderRight > middleHeight {
+			offsetY = middleHeight - y
+		} else if heightToBorderRight <= middleHeight {
+			offsetY = screenHeight - player.borderHeight
+		}
+	}
+
+	player.level.SetOffset(offsetX, offsetY)
 	// We need to make sure and call Draw on the underlying Entity.
 	player.Entity.Draw(screen)
 }
@@ -63,8 +87,8 @@ func InitBorder(level *tl.BaseLevel, width, height int) {
 	// top and bottom border
 	bottomY := height - 1
 	for x := 0; x < width; x++ {
-		topBorder := NewBorder(x, 0, '=')
-		bottomBorder := NewBorder(x, bottomY, '=')
+		topBorder := NewBorder(x, 0, ' ')
+		bottomBorder := NewBorder(x, bottomY, ' ')
 		level.AddEntity(topBorder)
 		level.AddEntity(bottomBorder)
 	}
@@ -82,17 +106,21 @@ func main() {
 	game := tl.NewGame()
 
 	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.RgbTo256Color(172, 186, 207),
+		Bg: tl.RgbTo256Color(0, 0, 0),
 		Fg: tl.ColorBlack,
 		Ch: ' ',
 	})
 
-	InitBorder(level, 50, 50)
+	borderWidth, borderHeight := 200, 50
+
+	InitBorder(level, borderWidth, borderHeight)
 
 	player := Player{
-		Entity: tl.NewEntity(3, 5, 1, 1),
-		level:  level,
-		screen: game.Screen(),
+		Entity:       tl.NewEntity(3, 5, 1, 1),
+		level:        level,
+		screen:       game.Screen(),
+		borderWidth:  borderWidth,
+		borderHeight: borderHeight,
 	}
 
 	{
@@ -102,6 +130,7 @@ func main() {
 	level.AddEntity(&player)
 
 	game.Screen().SetLevel(level)
+
 	game.Screen().EnablePixelMode()
 
 	game.Start()

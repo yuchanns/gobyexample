@@ -15,11 +15,13 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-gonic/gin v1.5.0
+	github.com/go-delve/delve v1.5.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
+	github.com/google/go-dap v0.3.0 // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10
@@ -28,21 +30,23 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
-	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/panjf2000/ants/v2 v2.4.2
 	github.com/pelletier/go-toml v1.6.0 // indirect
+	github.com/peterh/liner v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.13.0 // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.6.0
+	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
+	github.com/spf13/cobra v1.0.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.6.1
@@ -50,9 +54,11 @@ require (
 	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
 	github.com/volatiletech/null v8.0.0+incompatible // indirect
 	github.com/volatiletech/sqlboiler v3.6.1+incompatible
+	go.starlark.net v0.0.0-20200929122913-88a10930eb75 // indirect
+	golang.org/x/arch v0.0.0-20200826200359-b19915210f00 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
-	golang.org/x/sys v0.0.0-20200916084744-dbad9cb7cb7a // indirect
+	golang.org/x/sys v0.0.0-20201005172224-997123666555 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20200225022059-a0ec867d517c // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
