@@ -53,7 +53,7 @@ require (
 	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
 	github.com/volatiletech/null v8.0.0+incompatible // indirect
 	github.com/volatiletech/sqlboiler v3.6.1+incompatible
-	go.mongodb.org/mongo-driver v1.4.2 // indirect
+	go.mongodb.org/mongo-driver v1.4.2
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
