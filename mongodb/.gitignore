@@ -1,0 +1,4 @@
+mongodb
+!mongodb/.gitkeep
+mongoconfig
+!mongoconfig/.gitkeep
