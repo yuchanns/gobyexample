@@ -36,3 +36,34 @@ func TestNewDoorMachine(t *testing.T) {
 		}
 	}
 }
+
+func TestNodeFs(t *testing.T) {
+	table := []struct {
+		CurrentState transState
+		Flag         bool
+		Node         *TMonitorStatus
+		Expect       transState
+	}{
+		{TransRun, false, &TMonitorStatus{TransRun, 9, true}, TransCritical},
+		{TransCritical, true, &TMonitorStatus{TransCritical, 9, true}, TransRun},
+		{TransCritical, false, &TMonitorStatus{TransCritical, 9, false}, TransDown},
+	}
+
+	fs := InitNodeFs()
+
+	for _, item := range table {
+		node, err := fs.Transfer(item.CurrentState, item.Node, item.Flag)
+		if err != nil {
+			t.Errorf("failed transfer: %+v", err)
+		}
+
+		n, ok := node.(*TMonitorStatus)
+		if !ok {
+			t.Errorf("failed to assert node: %v", node)
+		}
+		if n.CurrentState != item.Expect {
+			t.Errorf("next status not as expected: %d", n.CurrentState)
+		}
+	}
+
+}
