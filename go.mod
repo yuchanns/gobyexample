@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go v1.35.11 // indirect
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/coreos/etcd v3.3.10+incompatible
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4
 	github.com/friendsofgo/errors v0.9.2
