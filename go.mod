@@ -17,7 +17,8 @@ require (
 	github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4
 	github.com/friendsofgo/errors v0.9.2
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
-	github.com/gin-gonic/gin v1.5.0
+	github.com/gin-contrib/pprof v1.3.0
+	github.com/gin-gonic/gin v1.6.2
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.3.0
@@ -67,6 +68,7 @@ require (
 	google.golang.org/genproto v0.0.0-20201015140912-32ed001d685c // indirect
 	google.golang.org/grpc v1.33.0
 	google.golang.org/protobuf v1.25.0 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/ini.v1 v1.51.1 // indirect
 	gopkg.in/russross/blackfriday.v2 v2.0.0
