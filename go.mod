@@ -44,6 +44,7 @@ require (
 	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/panjf2000/ants/v2 v2.4.2
 	github.com/pkg/errors v0.9.1
+	github.com/prometheus/client_golang v1.8.0
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
