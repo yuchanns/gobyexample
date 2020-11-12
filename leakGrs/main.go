@@ -3,15 +3,15 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 )
 
 func leakGrs() error {
 	s := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	ch := make(chan error, 9)
+	ch := make(chan error)
 
 	for i := range s {
 		go func(i int) {
@@ -42,13 +42,9 @@ func handlerLeakGrs(c *gin.Context) {
 
 func main() {
 	engine := gin.Default()
-	pprof.Register(engine)
 	engine.GET("/", handlerLeakGrs)
-	server := http.Server{
-		Addr:    ":8080",
-		Handler: engine,
-	}
-	if err := server.ListenAndServe(); err != nil {
+	http.Handle("/", engine)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("cannot start server: %+v", err)
 	}
 }
