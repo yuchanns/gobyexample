@@ -47,6 +47,9 @@ func PrintStack(err error, skip int) {
 			traces = append(traces, strings.ReplaceAll(strings.TrimSpace(fmt.Sprintf("%+s:%d", f, f)), "\n\t", " "))
 		}
 		fmt.Printf("%s\n", err)
-		fmt.Printf("error stack: %v\n", traces)
+		fmt.Println("error stack:")
+		for i := range traces {
+			fmt.Println(traces[i])
+		}
 	}
 }
