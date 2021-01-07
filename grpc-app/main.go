@@ -36,6 +36,8 @@ func main() {
 
 	reflection.Register(srv)
 
+	log.Println("start at :8080")
+
 	if err := srv.Serve(l); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
