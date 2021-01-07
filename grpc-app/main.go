@@ -14,7 +14,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
+
+	var opts []grpc.ServerOption
+
+	if middlewares, closeFunc, err := startup.BuildGrpcOpentracingMiddlewares(); err == nil {
+		defer closeFunc()
+		opts = append(opts, middlewares...)
+	} else {
+		log.Println(err)
+	}
+
+	srv := grpc.NewServer(opts...)
 
 	if err := startup.RegisterGrpcServer(srv); err != nil {
 		log.Fatalf("failed to register grpc server: %+v", err)
