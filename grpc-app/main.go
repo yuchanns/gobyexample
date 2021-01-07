@@ -1,11 +1,13 @@
 package main
 
 import (
+	"github.com/yuchanns/gobyexample/grpc-app/common"
 	"github.com/yuchanns/gobyexample/grpc-app/infra/startup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"os"
 )
 
 func main() {
@@ -17,7 +19,10 @@ func main() {
 
 	var opts []grpc.ServerOption
 
-	if middlewares, closeFunc, err := startup.BuildGrpcOpentracingMiddlewares(); err == nil {
+	if middlewares, closeFunc, err := common.BuildGrpcOpentracingMiddlewares(
+		"grpc-app",
+		os.Getenv("AGENT_HOST_PORT"),
+	); err == nil {
 		defer closeFunc()
 		opts = append(opts, middlewares...)
 	} else {
