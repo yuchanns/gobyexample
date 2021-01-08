@@ -1,6 +1,8 @@
 package startup
 
 import (
+	"context"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/yuchanns/gobyexample/grpc-app/common"
 	"github.com/yuchanns/gobyexample/grpc-app/infra/startup/wire"
 	helloworld "github.com/yuchanns/gobyexample/grpc-app/proto/greeter"
@@ -12,6 +14,13 @@ import (
 func RegisterGrpcServer(srv *grpc.Server) error {
 	greeterSrv := wire.InitializeGreeterServer()
 	helloworld.RegisterGreeterServer(srv, greeterSrv)
+	return nil
+}
+
+func RegisterGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
+	if err := helloworld.RegisterGreeterHandlerFromEndpoint(ctx, mux, endpoint, opts); err != nil {
+		return err
+	}
 	return nil
 }
 
