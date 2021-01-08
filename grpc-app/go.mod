@@ -3,6 +3,7 @@ module github.com/yuchanns/gobyexample/grpc-app
 go 1.15
 
 require (
+	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang/protobuf v1.4.3
 	github.com/google/wire v0.4.0
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645

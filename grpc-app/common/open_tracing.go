@@ -32,6 +32,7 @@ func BuildGrpcOpentracingMiddlewares(name, agentHostPort string) ([]grpc.ServerO
 	if err != nil {
 		return nil, nil, err
 	}
+	opentracing.SetGlobalTracer(tracer)
 	opts = append(opts,
 		grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer, otgrpc.LogPayloads())),
 		grpc.StreamInterceptor(otgrpc.OpenTracingStreamServerInterceptor(tracer, otgrpc.LogPayloads())),
