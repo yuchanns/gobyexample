@@ -3,9 +3,11 @@ module github.com/yuchanns/gobyexample/grpc-app
 go 1.15
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang/protobuf v1.4.3
 	github.com/google/wire v0.4.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible

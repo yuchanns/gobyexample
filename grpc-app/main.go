@@ -1,6 +1,9 @@
 package main
 
 import (
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/yuchanns/gobyexample/grpc-app/common"
 	"github.com/yuchanns/gobyexample/grpc-app/infra/startup"
 	"google.golang.org/grpc"
@@ -17,16 +20,22 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	var opts []grpc.ServerOption
-
-	if middlewares, closeFunc, err := common.BuildGrpcOpentracingMiddlewares(
-		"grpc-app",
-		os.Getenv("AGENT_HOST_PORT"),
-	); err == nil {
-		defer closeFunc()
-		opts = append(opts, middlewares...)
+	tracer, closer, err := common.NewJaegerTracer("grpc-app", os.Getenv("AGENT_HOST_PORT"))
+	if err == nil {
+		defer closer.Close()
 	} else {
-		log.Println(err)
+		log.Println("failed to create Jaeger tracer")
+	}
+
+	opts := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
 	}
 
 	srv := grpc.NewServer(opts...)
