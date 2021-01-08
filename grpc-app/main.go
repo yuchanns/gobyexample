@@ -18,4 +18,5 @@ func main() {
 	}
 	server := common.NewGrpcServer(app)
 	server.Run()
+	defer server.Close()
 }

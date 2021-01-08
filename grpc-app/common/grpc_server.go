@@ -4,11 +4,11 @@ import (
 	"context"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -25,10 +25,11 @@ type GrpcApplication struct {
 }
 
 type GrpcServer struct {
-	app *GrpcApplication
-	mux *runtime.ServeMux
-	l   net.Listener
-	srv *grpc.Server
+	app     *GrpcApplication
+	mux     *runtime.ServeMux
+	l       net.Listener
+	srv     *grpc.Server
+	closers []io.Closer
 }
 
 func NewGrpcServer(app *GrpcApplication) *GrpcServer {
@@ -37,21 +38,22 @@ func NewGrpcServer(app *GrpcApplication) *GrpcServer {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	var closers []io.Closer
 
 	tracer, closer, err := NewJaegerTracer(app.AppName, app.AgentHostPort)
 	if err == nil {
-		defer closer.Close()
+		closers = append(closers, closer)
 	} else {
 		log.Println("failed to create Jaeger tracer")
 	}
 
 	opts := []grpc.ServerOption{
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			otgrpc.OpenTracingStreamServerInterceptor(tracer, otgrpc.LogPayloads()),
 			grpc_recovery.StreamServerInterceptor(),
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			otgrpc.OpenTracingServerInterceptor(tracer, otgrpc.LogPayloads()),
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	}
@@ -84,10 +86,11 @@ func NewGrpcServer(app *GrpcApplication) *GrpcServer {
 	reflection.Register(srv)
 
 	return &GrpcServer{
-		mux: mux,
-		l:   l,
-		srv: srv,
-		app: app,
+		mux:     mux,
+		l:       l,
+		srv:     srv,
+		app:     app,
+		closers: closers,
 	}
 }
 
@@ -103,4 +106,14 @@ func (s *GrpcServer) Run() {
 	if err := s.srv.Serve(s.l); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+func (s *GrpcServer) Close() error {
+	for i := range s.closers {
+		if err := s.closers[i].Close(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
