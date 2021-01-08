@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang/protobuf v1.4.3
 	github.com/google/wire v0.4.0

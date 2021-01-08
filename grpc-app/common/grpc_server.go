@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"github.com/go-playground/validator/v10"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -15,13 +16,21 @@ import (
 )
 
 type GrpcApplication struct {
-	Endpoint           string
-	GatewayAddr        string
-	AppName            string
+	Endpoint           string `validate:"required"`
+	GatewayAddr        string `validate:"required"`
+	AppName            string `validate:"required"`
 	AgentHostPort      string
 	RegisterGrpcServer func(srv *grpc.Server) error
 	RegisterGateway    func(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error
 	RegisterVars       func() error
+}
+
+func (a *GrpcApplication) Validate() error {
+	vd := validator.New()
+	if errs := vd.Struct(a); errs != nil {
+		return errs
+	}
+	return nil
 }
 
 type GrpcServer struct {
@@ -33,6 +42,9 @@ type GrpcServer struct {
 }
 
 func NewGrpcServer(app *GrpcApplication) *GrpcServer {
+	if err := app.Validate(); err != nil {
+		log.Fatalf("validation failed: %s", err)
+	}
 	l, err := net.Listen("tcp", app.Endpoint)
 
 	if err != nil {
