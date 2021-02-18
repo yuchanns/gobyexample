@@ -6,11 +6,13 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"math/big"
 	"os"
 	"path"
 	"software.sslmate.com/src/go-pkcs12"
+	"time"
 )
 
 func KeyGen() error {
@@ -37,6 +39,9 @@ func KeyGen() error {
 			Province:           []string{"province"},
 			CommonName:         "name",
 		},
+		// #4 the certificate should has start/end life
+		NotBefore: time.Now(),
+		NotAfter:  time.Now().AddDate(1, 0, 0),
 	}
 
 	derBytes, err := x509.CreateCertificate(rand.Reader, template, template, &keyBytes.PublicKey, keyBytes)
@@ -84,6 +89,8 @@ func KeyGen() error {
 	if err := certOut.Close(); err != nil {
 		return err
 	}
+
+	fmt.Printf("the certificate has been generated: \n\tpfx: %s\n\tpem: %s\n", priPath, pubPath)
 
 	return nil
 }
