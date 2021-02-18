@@ -1,6 +1,9 @@
 package chain_pattern
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // IConsumer is the base interface of all real consumers.
 type IConsumer interface {
@@ -35,5 +38,8 @@ func (c *AConsumer) Consume(ctx context.Context, msg *Message) error {
 	if c.Tag == msg.Tag {
 		return c.IConsumer.Consume(ctx, msg)
 	}
-	return c.next.Consume(ctx, msg)
+	if c.next != nil {
+		return c.next.Consume(ctx, msg)
+	}
+	return fmt.Errorf("no consumer found for tag %s", msg.Tag)
 }

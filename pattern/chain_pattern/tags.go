@@ -1,8 +1,8 @@
 package chain_pattern
 
-type Tag int
+type Tag string
 
 const (
-	TagOrder Tag = iota
-	TagNotify
+	TagOrder  Tag = "TagOrder"
+	TagNotify     = "TagNotify"
 )
