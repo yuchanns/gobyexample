@@ -44,8 +44,8 @@ func TestCallback_Delete(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectExec("DELETE FROM `books` WHERE id = (.+) and gender = (.+) OPTION (.+)").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	db.Set("username", "yuchanns").Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(&User{}, "id = ? and gender = ?", 1, 2)
-	db.Set("username", "yuchanns").Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(&Book{}, "id = ? and gender = ?", 1, 2)
+	db.InstanceSet("username", "yuchanns").Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(&User{}, "id = ? and gender = ?", 1, 2)
+	db.InstanceSet("username", "yuchanns").Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(&Book{}, "id = ? and gender = ?", 1, 2)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
@@ -69,16 +69,16 @@ func TestCallback_UpdateTimestampForCreate(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectExec("INSERT INTO `books`").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	db.Set("username", "yuchanns").Create(&User{
+	db.InstanceSet("username", "yuchanns").Create(&User{
 		Name:   "yuchanns",
 		Gender: 1,
 	})
-	db.Set("username", "yuchanns").Create(&User{
+	db.InstanceSet("username", "yuchanns").Create(&User{
 		Name:      "yuchanns",
 		Gender:    1,
 		CreatedOn: time.Date(2020, time.May, 27, 11, 26, 0, 0, time.Local),
 	})
-	db.Set("username", "yuchanns").Create(&Book{
+	db.InstanceSet("username", "yuchanns").Create(&Book{
 		Name: "yuchanns",
 	})
 	assert.Nil(t, mock.ExpectationsWereMet())
@@ -104,17 +104,17 @@ func TestCallback_UpdateTimeStampBeforeUpdate(t *testing.T) {
 	mock.ExpectExec("UPDATE `books` SET `name`=(.+) WHERE `id` = (.+)").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 	fixedTime := time.Date(2020, time.May, 27, 11, 26, 0, 0, time.Local)
-	db.Set("username", "yuchanns").Model(&User{
+	db.InstanceSet("username", "yuchanns").Model(&User{
 		ID: 1, Name: "yuchanns", Gender: 1,
 		CreatedOn: fixedTime, CreatedBy: "yuchanns1",
 		ModifiedOn: fixedTime, ModifiedBy: "yuchanns1",
 	}).Update("name", "yuchanns1")
-	db.Set("username", "yuchanns").Model(&User{
+	db.InstanceSet("username", "yuchanns").Model(&User{
 		ID: 1, Name: "yuchanns", Gender: 1,
 		CreatedOn: fixedTime, CreatedBy: "yuchanns1",
 		ModifiedOn: fixedTime, ModifiedBy: "yuchanns1",
 	}).Omit("not_exist").Update("not_exist", "")
-	db.Set("username", "yuchanns").Model(&Book{
+	db.InstanceSet("username", "yuchanns").Model(&Book{
 		ID: 1, Name: "yuchanns1",
 	}).Update("name", "yuchanns1")
 	assert.Nil(t, mock.ExpectationsWereMet())
@@ -140,8 +140,8 @@ func TestCallback_SoftDeleteQuery(t *testing.T) {
 	rows.AddRow(1, "yuchanns", 1, 0, now, "yuchanns", now, "yuchanns", "", nil)
 	mock.ExpectQuery("SELECT (.+) FROM `users` WHERE name like (.+)  AND `deleted_state` = (.+)").WillReturnRows(rows)
 	mock.ExpectQuery("SELECT (.+) FROM `users` WHERE name like (.+)  AND `deleted_state` = (.+)").WillReturnRows(rows)
-	_, _ = db.Set("username", "yuchanns").Model(&User{}).Where("name like ? ", "%yuchanns%").Rows()
+	_, _ = db.InstanceSet("username", "yuchanns").Model(&User{}).Where("name like ? ", "%yuchanns%").Rows()
 	var users []*User
-	db.Set("username", "yuchanns").Where("name like ? ", "%yuchanns%").Find(&users)
+	db.InstanceSet("username", "yuchanns").Where("name like ? ", "%yuchanns%").Find(&users)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }

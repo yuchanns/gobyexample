@@ -9,7 +9,7 @@ import (
 
 func username(db *gorm.DB) string {
 	userName := ""
-	if userNameIFace, ok := db.Get("username"); ok && userNameIFace != nil {
+	if userNameIFace, ok := db.InstanceGet("username"); ok && userNameIFace != nil {
 		if s, ok := userNameIFace.(string); ok {
 			userName = s
 		}
