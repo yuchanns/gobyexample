@@ -137,11 +137,18 @@ func TestCallback_SoftDeleteQuery(t *testing.T) {
 		"id", "name", "gender", "deleted_state", "created_on", "created_by",
 		"modified_on", "modified_by", "deleted_by", "deleted_on",
 	})
+	rows2 := sqlmock.NewRows([]string{"count"})
 	rows.AddRow(1, "yuchanns", 1, 0, now, "yuchanns", now, "yuchanns", "", nil)
+	rows2.AddRow(1)
 	mock.ExpectQuery("SELECT (.+) FROM `users` WHERE name like (.+)  AND `deleted_state` = (.+)").WillReturnRows(rows)
 	mock.ExpectQuery("SELECT (.+) FROM `users` WHERE name like (.+)  AND `deleted_state` = (.+)").WillReturnRows(rows)
+	mock.ExpectQuery("SELECT (.+) FROM `users` LEFT JOIN (.+)  WHERE tt.id in (.+) AND `users`.`deleted_state` = (.+)").WillReturnRows(rows)
+	mock.ExpectQuery("SELECT (.+) FROM user as u inner join task_team as tt on tt.user_id=u.id WHERE tt.id in (.+)").WillReturnRows(rows2)
 	_, _ = db.InstanceSet("username", "yuchanns").Model(&User{}).Where("name like ? ", "%yuchanns%").Rows()
 	var users []*User
 	db.InstanceSet("username", "yuchanns").Where("name like ? ", "%yuchanns%").Find(&users)
+	db.Set("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Joins("LEFT JOIN task_team AS tt ON tt.user_id=user_id.id ").Find(&users)
+	var cnt int64
+	db.Set("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Table("user as u").Joins("inner join task_team as tt on tt.user_id=u.id").Count(&cnt)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }

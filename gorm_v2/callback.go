@@ -96,6 +96,9 @@ func updateTimeStampForCreateCallback(db *gorm.DB) {
 // checkout about callback in https://gorm.io/docs/write_plugins.html
 // auto set values if fields about update exist
 func updateTimeStampForUpdateCallback(db *gorm.DB) {
+	if db.Error != nil || db.Statement.Schema == nil {
+		return
+	}
 	// won't update without model changed
 	if !db.Statement.Changed() {
 		return
@@ -117,10 +120,15 @@ func updateTimeStampForUpdateCallback(db *gorm.DB) {
 // checkout about callback in https://gorm.io/docs/write_plugins.html
 // add deleted_state = 0 while performing a query
 func softDeleteQueryCallback(db *gorm.DB) {
-	if db.Statement.Unscoped {
+	if db.Error != nil || db.Statement.Unscoped || db.Statement.Schema == nil {
 		return
 	}
 	if deletedField := db.Statement.Schema.LookUpField("DeletedState"); deletedField != nil {
-		db.Statement.AddClause(clause.Where{Exprs: []clause.Expression{clause.Eq{Column: deletedField.DBName, Value: 0}}})
+		column := clause.Column{Name: deletedField.DBName}
+		// add table name as column prefix if join
+		if len(db.Statement.Joins) > 0 {
+			column.Table = db.Statement.Schema.Table
+		}
+		db.Statement.AddClause(clause.Where{Exprs: []clause.Expression{clause.Eq{Column: column, Value: 0}}})
 	}
 }
