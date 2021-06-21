@@ -73,26 +73,31 @@ func (m Mathmatics) GenerateTempURL() (string, func() error, error) {
 	}, nil
 }
 
-func Render(ctx context.Context, ms Mathmatics) (Mathmatics, string, error) {
+func Render(ctx context.Context, ms Mathmatics) (Mathmatics, string, string, error) {
 	mathematics := ms.Clone()
 	url, tmpClose, err := mathematics.GenerateTempURL()
 	if err != nil {
-		return nil, "", err
+		return nil, "", "", err
 	}
 	defer tmpClose()
 	chromeCtx, chromeCancel := chromedp.NewContext(ctx, chromedp.WithLogf(log.Printf))
 	defer chromeCancel()
-	var html string
+	var (
+		html string
+		svg  string
+	)
 	actions := []chromedp.Action{
 		chromedp.Navigate(url),
 		chromedp.WaitVisible(".MathJax"),
 		chromedp.InnerHTML("html", &html, chromedp.NodeVisible,
 			chromedp.ByQuery),
+		chromedp.OuterHTML("#MJX-SVG-global-cache", &svg,
+			chromedp.ByQuery),
 	}
 	actions = append(actions, mathematics.GenerateActions()...)
 
 	if err := chromedp.Run(chromeCtx, actions...); err != nil {
-		return nil, "", err
+		return nil, "", "", err
 	}
 	reg := regexp.MustCompile("<style(([\\s\\S])*?)</style>")
 	matches := reg.FindAllStringSubmatch(html, -1)
@@ -100,5 +105,5 @@ func Render(ctx context.Context, ms Mathmatics) (Mathmatics, string, error) {
 	for _, match := range matches {
 		matchJoins = append(matchJoins, match[0])
 	}
-	return mathematics, strings.Join(matchJoins, ""), nil
+	return mathematics, strings.Join(matchJoins, ""), svg, nil
 }

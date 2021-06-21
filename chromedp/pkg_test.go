@@ -14,8 +14,9 @@ func TestRender(t *testing.T) {
 		{ID: "m3", Expr: "a_{3}=b_{2}q+a_{2}q+a_{2}p", Inline: false},
 		{ID: "m4", Expr: "\\sum\\limits_{n=a}^{b}f(n)=f(a)+\\cdots+f(b)", Inline: false},
 	}
-	mathematics, style, err := Render(context.Background(), ms)
+	mathematics, style, svg, err := Render(context.Background(), ms)
 	assert.Nil(t, err)
 	assert.NotEqual(t, "", style)
+	assert.NotEqual(t, "", svg)
 	assert.Equal(t, false, reflect.DeepEqual(ms, mathematics))
 }
