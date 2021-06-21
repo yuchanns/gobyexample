@@ -23,9 +23,9 @@ type Mathmatics []*Mathematic
 func (m Mathmatics) String() string {
 	paragraphs := make([]string, 0, len(m))
 	for _, mathmatic := range m {
-		delimiter := "$"
+		delimiter := "$$"
 		if mathmatic.Inline {
-			delimiter = "$$"
+			delimiter = "$"
 		}
 		paragraphs = append(paragraphs, fmt.Sprintf(
 			"<p id=\"%s\">%s%s%s</p>",
