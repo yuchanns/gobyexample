@@ -59,27 +59,7 @@ func (m Mathmatics) Clone() Mathmatics {
 }
 
 func (m Mathmatics) GenerateTempURL() (string, func() error, error) {
-	content := fmt.Sprintf(`<!DOCTYPE html>
-<html>
-<head>
-<script>
-MathJax = {
-  tex: {
-    inlineMath: [['$', '$']]
-  },
-  svg: {
-    fontCache: 'global'
-  }
-};
-</script>
-<script id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-</head>
-<body>
-%s
-</body>
-</html>
-`, m)
+	content := fmt.Sprintf(`<!DOCTYPE html><html><head><script>MathJax={tex:{inlineMath:[['$','$']]},svg:{fontCache:'global'}};</script><script id="MathJax-script"async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script></head><body>%s</body></html>`, m)
 
 	tempFile, err := ioutil.TempFile("", "*.html")
 	if err != nil {
