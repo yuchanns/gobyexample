@@ -147,8 +147,8 @@ func TestCallback_SoftDeleteQuery(t *testing.T) {
 	_, _ = db.InstanceSet("username", "yuchanns").Model(&User{}).Where("name like ? ", "%yuchanns%").Rows()
 	var users []*User
 	db.InstanceSet("username", "yuchanns").Where("name like ? ", "%yuchanns%").Find(&users)
-	db.Set("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Joins("LEFT JOIN task_team AS tt ON tt.user_id=user_id.id ").Find(&users)
+	db.InstanceSet("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Joins("LEFT JOIN task_team AS tt ON tt.user_id=user_id.id ").Find(&users)
 	var cnt int64
-	db.Set("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Table("user as u").Joins("inner join task_team as tt on tt.user_id=u.id").Count(&cnt)
+	db.InstanceSet("username", "yuchanns").Where("tt.id in (?) ", []int32{1, 2, 3, 4}).Table("user as u").Joins("inner join task_team as tt on tt.user_id=u.id").Count(&cnt)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
