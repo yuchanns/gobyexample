@@ -31,13 +31,13 @@ var _ = Describe("Casbin", func() {
 	Describe("Add Policy", func() {
 		Context("With Add Policy", func() {
 			It("should add a role admin", func() {
-				_, err = e.AddPolicy("admin", "/user/list", "read")
+				_, err = e.AddPolicy("admin", "tenant1", "/user/list", "read")
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 		Context("With Add Group Policy", func() {
 			It("should add role admin for user alice", func() {
-				_, err = e.AddGroupingPolicy("alice", "admin")
+				_, err = e.AddGroupingPolicy("alice", "admin", "tenant1")
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})
@@ -46,14 +46,14 @@ var _ = Describe("Casbin", func() {
 	Describe("Access Object", func() {
 		Context("With access object", func() {
 			It("should access /user/list by read with user alice", func() {
-				ok, err := e.Enforce("alice", "/user/list", "read")
+				ok, err := e.Enforce("alice", "tenant1", "/user/list", "read")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(ok).To(Equal(true))
 			})
 		})
 		Context("With not access object", func() {
 			It("should not access /user/list by write with user alice", func() {
-				ok, err := e.Enforce("alice", "/user/list", "write")
+				ok, err := e.Enforce("alice", "tenant1", "/user/list", "write")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(ok).To(Equal(false))
 			})
@@ -67,18 +67,18 @@ var _ = Describe("Casbin", func() {
 				Expect(roles).To(Equal([]string{"admin"}))
 			})
 			It("should get admin permissions", func() {
-				permissions := e.GetPermissionsForUser("admin")
-				Expect(permissions).To(Equal([][]string{{"admin", "/user/list", "read"}}))
+				permissions := e.GetPermissionsForUser("admin", "tenant1")
+				Expect(permissions).To(Equal([][]string{{"admin", "tenant1", "/user/list", "read"}}))
 			})
 		})
 		Context("With Role and User", func() {
 			It("should get roles for user alice", func() {
-				roles, err := e.GetRolesForUser("alice")
+				roles, err := e.GetRolesForUser("alice", "tenant1")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(roles).To(Equal([]string{"admin"}))
 			})
 			It("should get users for role admin", func() {
-				roles, err := e.GetUsersForRole("admin")
+				roles, err := e.GetUsersForRole("admin", "tenant1")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(roles).To(Equal([]string{"alice"}))
 			})
